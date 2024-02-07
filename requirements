@@ -1,0 +1,20 @@
+!pip install numpy  # NumPy:computing and array operations.
+!pip install pandas  # Pandas: Data analysis and manipulation.
+!pip install matplotlib  # Matplotlib: creating visualizations.
+!pip install mplfinance  # Mplfinance: visualizing financial data.
+!pip install seaborn  # Seaborn: Statistical data visualization based on Matplotlib.
+!pip install plotly  # Plotly: interactive plotting.
+!pip install scipy  # SciPy: mathematics and engineering.
+!pip install statsmodels  # Statsmodels: Statistical modeling and econometrics.
+!pip install scikit-learn  # Scikit-learn: Machine learning.
+!pip install keras  # Keras: NN API, running on top of TensorFlow.
+!pip install tensorflow  # TensorFlow: machine learning and artificial intelligence.
+!pip install yfinance  # Yfinance: download financial data from Yahoo Finance.
+!pip install beautifulsoup4  # BeautifulSoup: web scraping, parsing HTML and XML documents.
+!pip install selenium  # Selenium: automating web browser interaction.
+!pip install nltk  # NLTK: Natural Language Toolkit (self explanatory).
+!pip install textblob  # TextBlob: processing textual data.
+!pip install spacy  # SpaCy: advanced NLP.
+!pip install gensim  # Gensim: unsupervised topic modeling and more NLP.
+!pip install transformers  # Transformers: BERT ML models for NLP from Hugging Face.
+!pip install torch  # PyTorch: ML and ML.
