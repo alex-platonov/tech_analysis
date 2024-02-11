@@ -10,7 +10,7 @@ An attempt to investigate various strategies such as :
  - leading and lagging trend;
  - momentum;
  
-Apart from that, various volatility and volume indicators such as: 
+Apart from that, various volatility and volume indicators will be explored: 
 - Moving Averages; 
 - Moving Average Convergence Divergence (MACD); 
 - Stochastic Oscillator; 
