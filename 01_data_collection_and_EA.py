@@ -17,7 +17,7 @@ from datetime import date, timedelta
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-%matplotlib inline
+#%matplotlib inline
 
 ftse100_stocks = yf.download("AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L", start=datetime.datetime(2014, 1, 1), 
                                      end=datetime.datetime(2023, 12, 31), group_by='tickers')
