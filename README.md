@@ -33,6 +33,9 @@ A relatively safe, however representative list of stocks has been identified (hu
 
 This list represents a selection of different industries, namely - pharmaceuticals, oil, and finance. 
 
+![Step_1](https://github.com/alex-platonov/tech_analysis/blob/main/step_1.gif)
+
+
 ## Chart patterns and technical indicators
 As stated above: Technical analysis is the use of charts and technical indicators to identify trading signals and price patterns so an investigative attempt will be made using the most common indicators.  
 
