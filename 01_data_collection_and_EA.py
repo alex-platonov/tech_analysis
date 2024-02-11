@@ -57,7 +57,7 @@ adj_close_min_max = adj_close.apply(lambda x: pd.Series([x.min(), x.max()],
 
 adj_close_min_max
 
- Plot BP.L and HSBA.L data on a secondary y-axis
+#Plot BP.L and HSBA.L data on a secondary y-axis
 
 adj_close.plot(secondary_y = ["BP.L", "HSBA.L"], grid = True)
 sns.set(rc={'figure.figsize':(15, 9)})
