@@ -57,7 +57,7 @@ adj_close_min_max = adj_close.apply(lambda x: pd.Series([x.min(), x.max()],
 
 adj_close_min_max
 
-#Plot BP.L and HSBA.L data on a secondary y-axis
+# Plot BP.L and HSBA.L data on a secondary y-axis
 
 adj_close.plot(secondary_y = ["BP.L", "HSBA.L"], grid = True)
 sns.set(rc={'figure.figsize':(15, 9)})
@@ -100,7 +100,7 @@ plt.title('Stock returns for 2023', color = 'black', fontsize = 20)
 plt.xlabel('Date', color = 'black', fontsize = 15)
 plt.ylabel('Returns (%)', color = 'black', fontsize = 15);
 
-#Use numpy's log function to obtain and plot the log differences of the adjusted price data
+# Use numpy's log function to obtain and plot the log differences of the adjusted price data
 
 stock_change = adj_close.apply(lambda x: np.log(x) - np.log(x.shift(1))) # shift moves dates back by 1.
 
@@ -127,12 +127,12 @@ plt.title('Log differences of stocks for 2023', color = 'black', fontsize = 20)
 plt.xlabel('Year', color = 'black', fontsize = 15)
 plt.ylabel('Natural log', color = 'black', fontsize = 15);
 
-#To keep the returns on the same time scale - the annual percentage rate needs to be computed
+# To keep the returns on the same time scale - the annual percentage rate needs to be computed
 stock_change_apr = stock_change * 252 * 100    # There are 252 trading days in a year; the 100 converts to percentages
 
 stock_change_apr
 
- Plotting annualised returns for the last year (2023)
+# Plotting annualised returns for the last year (2023)
 
 stock_change_apr['2023-01-01':'2023-12-31'].plot(grid = True).axhline(y = 0, color = "black", lw = 2)
 sns.set(rc={'figure.figsize':(15, 9)})
