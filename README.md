@@ -25,7 +25,7 @@ Historical data on several FTSE 100 index companies will be collected, analyzed,
 
 A relatively safe, however representative list of stocks has been identified (huge thanks to Alison Mitchell):
 - ULVR.L (Unilever)
-- SHEL.L (Royal Dutch Shell)
+- SHEL.L (Shell)
 - GSK.L (GlaxoSmithKline)
 - AZN.L (AstraZeneca)
 - HSBA.L (HSBC)
