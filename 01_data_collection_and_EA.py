@@ -1,3 +1,7 @@
+!pip install yfinance
+!pip install mplfinance
+
+
 import yfinance as yf
 
 import numpy as np
