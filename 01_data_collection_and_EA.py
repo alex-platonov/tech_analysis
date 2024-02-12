@@ -115,6 +115,8 @@ plt.ylabel('Adjusted Close Price (pence)', color='black', fontsize=15)
 # Display the plot in Streamlit
 st.pyplot(plt)
 
+st.write('Here the absolute price is displayed rather than relative change which we are more concerned with when trading. AZN.L and ULVR.L stocks are far more expensive than BP.L and HSBA.L making the latter appear much less volatile than they truly are.')
+
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 # Divider
@@ -130,7 +132,7 @@ st.dataframe(adj_close_min_max)
 
 # Divider
 st.markdown("<hr>", unsafe_allow_html=True) 
-
+st.subheader('Adjusted Close Price with two different scales')
 st.write('Let us plot BP.L and HSBA.L data on a secondary y-axis')
 
 # Set the plot size and style using seaborn
@@ -145,12 +147,18 @@ plt.show()
 # Display the plot in Streamlit
 st.pyplot(plt)
 #--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True) 
+st.subheader('Returns of each stock')
+st.write('Next we would want to see the returns of each stock. However this requires transforming of the data to better suite our needs. So we would want to plot return_{t,0}  = \frac{price_t}{price_0} by applying the lambda function to each column in an adjusted close datatframe.')
 
-
-# So we would want to plot return_{t,0}  = \frac{price_t}{price_0} by applying the lambda function to each column in an adjusted close datatframe.
 returns_lambda = adj_close.apply(lambda x: x / x[0])
 returns_lambda.head()
+st.dataframe(returns_lambda.head())
 
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
 # Plot return_{t,0}  = \frac{price_t}{price_0} with transformed data to get an insight on how profitable the stock had been.
 
 returns_lambda.plot(grid = True).axhline(y = 1, color = "black", lw = 2)
