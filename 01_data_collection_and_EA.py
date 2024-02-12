@@ -1,5 +1,4 @@
 import yfinance as yf
-
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -18,6 +17,9 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 #%matplotlib inline
+
+st.header('FTSE 100 technical analysis pipeline: Step 1')
+st.subheader('Data collection')
 
 ftse100_stocks = yf.download("AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L", start=datetime.datetime(2014, 1, 1), 
                                      end=datetime.datetime(2023, 12, 31), group_by='tickers')
