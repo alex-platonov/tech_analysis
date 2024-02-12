@@ -5,8 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.style as style
 import matplotlib.patches as mpatches
-from matplotlib.dates import date2num, DateFormatter, WeekdayLocator,\
-    DayLocator, MONDAY
+from matplotlib.dates import date2num, DateFormatter, WeekdayLocator, DayLocator, MONDAY
 from mplfinance.original_flavor import candlestick_ohlc
 import seaborn as sns
 import streamlit as st
