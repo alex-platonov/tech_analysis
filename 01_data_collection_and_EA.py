@@ -9,7 +9,7 @@ from matplotlib.dates import date2num, DateFormatter, WeekdayLocator,\
     DayLocator, MONDAY
 from mplfinance.original_flavor import candlestick_ohlc
 import seaborn as sns
-
+import streamlit as st
 import datetime
 from datetime import date, timedelta
 
@@ -18,8 +18,11 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 #%matplotlib inline
 
-st.header('FTSE 100 technical analysis pipeline: Step 1')
-st.subheader('Data collection')
+st.title('FTSE_100 Tech analysis')
+
+st.write(This  an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit).)
+
+st.header('Data collection')
 
 ftse100_stocks = yf.download("AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L", start=datetime.datetime(2014, 1, 1), 
                                      end=datetime.datetime(2023, 12, 31), group_by='tickers')
