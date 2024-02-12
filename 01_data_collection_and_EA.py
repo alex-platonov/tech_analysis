@@ -59,7 +59,9 @@ st.write('Lets summarise the data to the dataframe to see if any values of datat
 buffer = StringIO()
 ftse100_stocks.info(buf=buffer)
 info_str = buffer.getvalue()
-st.text(info_str)
+
+# Displaying the info string using markdown for better formatting
+st.markdown("```\n" + info_str + "\n```")
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
