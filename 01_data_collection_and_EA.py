@@ -152,7 +152,7 @@ st.pyplot(plt)
 st.markdown("<hr>", unsafe_allow_html=True) 
 st.subheader('Returns of each stock')
 st.markdown("""
-Next, we would want to see the returns of each stock. However, this requires transforming of the data to better suit our needs. So, we would want to plot \(return_{t,0} = \frac{price_t}{price_0}\) by applying the lambda function to each column in an adjusted close dataframe.
+Next, we would want to see the returns of each stock. However, this requires transforming of the data to better suit our needs. So, we would want to plot $\(return_{t,0}$ = $\frac{price_t}{price_0}\$ by applying the lambda function to each column in an adjusted close dataframe.
 """, unsafe_allow_html=True)
 
 returns_lambda = adj_close.apply(lambda x: x / x[0])
