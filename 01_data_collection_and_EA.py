@@ -20,6 +20,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 st.title('FTSE_100 Tech analysis')
 
+st.markdown("<hr>", unsafe_allow_html=True)
+
 st.write('This  an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit). The present page is step #1 in a 4-step analysis pipeline')
 
 st.header('Data collection')
@@ -43,17 +45,22 @@ ftse100_stocks = yf.download("AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L", start=date
                                      end=datetime.datetime(2023, 12, 31), group_by='tickers')
 ftse100_stocks.head(10)
 
+st.markdown("<hr>", unsafe_allow_html=True)
+
 st.write('Displaying distribution of the data with descriptive statistics')
 ftse100_stocks.describe()
 
+st.markdown("<hr>", unsafe_allow_html=True)
+
 st.write('Lets summarise the data to the ddataframe to see if any values of datatypes are missing')
 ftse100_stocks.info()
+
+st.markdown("<hr>", unsafe_allow_html=True)
 
 st.write('Number of rows represents the number of trading days')
 ftse100_stocks.shape
 
 st.write('Adjusted Close price for each company stock.') 
-
 
 adj_close = pd.DataFrame()
 
@@ -62,7 +69,6 @@ for ticker in tickers:
     adj_close[ticker] = ftse100_stocks[ticker]['Adj Close']
 
 adj_close
-
 
 adj_close.plot(grid = True)
 sns.set(rc={'figure.figsize':(15, 9)})
