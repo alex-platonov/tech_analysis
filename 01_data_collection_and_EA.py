@@ -48,7 +48,7 @@ st.dataframe(ftse100_stocks.head(10))
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
-st.write('Let us explore the data using descriptive statistics')
+st.write('Let us attempt some data exploration')
 ftse100_stocks.describe()
 description = ftse100_stocks.describe()
 st.dataframe(description)
@@ -57,7 +57,8 @@ st.markdown("<hr>", unsafe_allow_html=True)
 
 st.write('Lets summarise the data to the dataframe to see if any values of datatypes are missing')
 ftse100_stocks.info()
-st.dataframe(ftse100_stocks.info())
+info = ftse100_stocks.info()
+st.dataframe(info)
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
