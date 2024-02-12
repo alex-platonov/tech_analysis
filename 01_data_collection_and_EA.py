@@ -18,13 +18,11 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 #%matplotlib inline
 
-st.title('FTSE_100 Tech analysis')
+st.title('FTSE_100 Technical analysis')
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-st.write('This  an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit). The present page is step #1 in a 4-step analysis pipeline')
-
-st.header('Data collection')
+st.write('This is an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit). The present page is step #1 in a 4-step analysis pipeline')
 
 st.write('Historical data on several FTSE 100 index companies will be collected, analyzed, and visualized in an attempt to gain insights into their equity market performance from 2014 to 2024. The market behavior of the index itself will also be analyzed.')
 text = """
@@ -41,6 +39,8 @@ This list represents a selection of different industries, namely - pharmaceutica
 """
 st.write(text)
 
+st.subheader('Data collection')
+
 ftse100_stocks = yf.download("AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L", start=datetime.datetime(2014, 1, 1), 
                                      end=datetime.datetime(2023, 12, 31), group_by='tickers')
 ftse100_stocks.head(10)
@@ -48,14 +48,15 @@ st.dataframe(ftse100_stocks.head(10))
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
+st.subheader('Data exploration')
 st.write('Let us attempt some data exploration')
 ftse100_stocks.describe()
 description = ftse100_stocks.describe()
 st.dataframe(description)
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
-
-st.write('Lets summarise the data to the dataframe to see if any values of datatypes are missing')
+st.subheader('Data check')
+st.write('Summarising data to a dataframe to see if any values of datatypes are missing')
 buffer = StringIO()
 ftse100_stocks.info(buf=buffer)
 info_str = buffer.getvalue()
@@ -64,13 +65,13 @@ info_str = buffer.getvalue()
 st.markdown("```\n" + info_str + "\n```")
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
-
+st.subheader('Trading days in the dataset')
 st.write('Number of rows represents the number of trading days')
 ftse100_stocks.shape
 st.dataframe(ftse100_stocks.shape)
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
-
+st.subheader('Adjusted Close Price')
 st.write('Adjusted Close price will be used to take into account all corporate actions, such as stock splits and dividends, to give a more accurate reflection of the true value of the stock and present a coherent picture of returns.')
 
 adj_close = pd.DataFrame()
@@ -89,8 +90,7 @@ st.dataframe(adj_close)
 
 # Divider
 st.markdown("<hr>", unsafe_allow_html=True)
-
-st.write('Adjusted Close price for each company stock.') 
+st.subheader('Adjusted Close price for each company stock.') 
 
 # Initialize an empty DataFrame for adjusted close prices
 adj_close = pd.DataFrame()
@@ -119,7 +119,7 @@ st.pyplot(plt)
 
 # Divider
 st.markdown("<hr>", unsafe_allow_html=True)
-
+st.subheader('Minimum and maximum')
 st.write('Lets alculate min and max Adjusted Close price')
 
 adj_close_min_max = adj_close.apply(lambda x: pd.Series([x.min(), x.max()], 
