@@ -69,6 +69,24 @@ st.write('Number of rows represents the number of trading days')
 ftse100_stocks.shape
 st.dataframe(ftse100_stocks.shape)
 #------------------------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.write('Adjusted Close price will be used to take into account all corporate actions, such as stock splits and dividends, to give a more accurate reflection of the true value of the stock and present a coherent picture of returns.')
+
+adj_close = pd.DataFrame()
+
+# List of tickers
+tickers = ['AZN.L', 'GSK.L', 'ULVR.L', 'BP.L', 'SHEL.L', 'HSBA.L']
+
+# Extracting Adjusted Close prices for each ticker
+for ticker in tickers:
+    adj_close[ticker] = ftse100_stocks[ticker]['Adj Close']
+
+# Display the DataFrame in Streamlit
+st.dataframe(adj_close)
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
 # Divider
 st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -98,18 +116,36 @@ plt.ylabel('Adjusted Close Price (pence)', color='black', fontsize=15)
 st.pyplot(plt)
 
 #--------------------------------------------------------------------------------------------------------------------------------------
+
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+
 st.write('Lets alculate min and max Adjusted Close price')
 
 adj_close_min_max = adj_close.apply(lambda x: pd.Series([x.min(), x.max()], 
                               index=['min', 'max']))
 
-adj_close_min_max
+st.dataframe(adj_close_min_max)
+#--------------------------------------------------------------------------------------------------------------------------------------
 
-# Plot BP.L and HSBA.L data on a secondary y-axis
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True) 
 
-adj_close.plot(secondary_y = ["BP.L", "HSBA.L"], grid = True)
+st.write('Let us plot BP.L and HSBA.L data on a secondary y-axis')
+
+# Set the plot size and style using seaborn
 sns.set(rc={'figure.figsize':(15, 9)})
-plt.title('Adjusted Close Price with two different scales', color = 'black', fontsize = 20);
+
+# Plotting the DataFrame with a secondary Y-axis for specific tickers
+plt.figure(figsize=(15, 9))
+ax = adj_close.plot(secondary_y=["BP.L", "HSBA.L"], grid=True)
+plt.title('Adjusted Close Price with two different scales', color='black', fontsize=20)
+plt.show()
+
+# Display the plot in Streamlit
+st.pyplot(plt)
+#--------------------------------------------------------------------------------------------------------------------------------------
+
 
 # So we would want to plot return_{t,0}  = \frac{price_t}{price_0} by applying the lambda function to each column in an adjusted close datatframe.
 returns_lambda = adj_close.apply(lambda x: x / x[0])
