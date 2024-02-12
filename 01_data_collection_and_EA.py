@@ -48,9 +48,10 @@ st.dataframe(ftse100_stocks.head(10))
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
-st.write('Displaying distribution of the data with descriptive statistics')
+st.write('Let us explore the data using descriptive statistics')
 ftse100_stocks.describe()
-st.dataframe(ftse100_stocks.describe())
+description = ftse100_stocks.describe()
+st.dataframe(description)
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
