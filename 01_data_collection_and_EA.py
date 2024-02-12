@@ -69,24 +69,35 @@ st.write('Number of rows represents the number of trading days')
 ftse100_stocks.shape
 st.dataframe(ftse100_stocks.shape)
 #------------------------------------------------------------------------------------------------------------------------------------
+# Divider
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.write('Adjusted Close price for each company stock.') 
 
+# Initialize an empty DataFrame for adjusted close prices
 adj_close = pd.DataFrame()
 
+# List of tickers
 tickers = ['AZN.L', 'GSK.L', 'ULVR.L', 'BP.L', 'SHEL.L', 'HSBA.L']
+
+# Extracting Adjusted Close prices
 for ticker in tickers:
     adj_close[ticker] = ftse100_stocks[ticker]['Adj Close']
 
-adj_close
-
-adj_close.plot(grid = True)
+# Set the plot size (optional)
 sns.set(rc={'figure.figsize':(15, 9)})
-plt.title('Adjusted Close Price for all stocks', color = 'black', fontsize = 20)
-plt.xlabel('Year', color = 'black', fontsize = 15)
-plt.ylabel('Adjusted Close Price (pence)', color = 'black', fontsize = 15);
 
+# Plotting
+plt.figure(figsize=(15, 9))
+adj_close.plot(grid=True)
+plt.title('Adjusted Close Price for all stocks', color='black', fontsize=20)
+plt.xlabel('Year', color='black', fontsize=15)
+plt.ylabel('Adjusted Close Price (pence)', color='black', fontsize=15)
+
+# Display the plot in Streamlit
+st.pyplot(plt)
+
+#--------------------------------------------------------------------------------------------------------------------------------------
 st.write('Lets alculate min and max Adjusted Close price')
 
 adj_close_min_max = adj_close.apply(lambda x: pd.Series([x.min(), x.max()], 
