@@ -64,11 +64,13 @@ info_str = buffer.getvalue()
 # Displaying the info string using markdown for better formatting
 st.markdown("```\n" + info_str + "\n```")
 #------------------------------------------------------------------------------------------------------------------------------------
+
 st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('Trading days in the dataset')
 st.write('Number of rows represents the number of trading days')
 ftse100_stocks.shape
-st.dataframe(ftse100_stocks.shape)
+#st.dataframe(ftse100_stocks.shape)
+
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('Adjusted Close Price')
