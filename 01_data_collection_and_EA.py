@@ -44,6 +44,7 @@ st.write(text)
 ftse100_stocks = yf.download("AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L", start=datetime.datetime(2014, 1, 1), 
                                      end=datetime.datetime(2023, 12, 31), group_by='tickers')
 ftse100_stocks.head(10)
+st.dataframe(ftse100_stocks.head(10))
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
