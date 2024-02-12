@@ -20,24 +20,40 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 st.title('FTSE_100 Tech analysis')
 
-st.write('This  an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit).')
+st.write('This  an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit). The present page is step #1 in a 4-step analysis pipeline')
 
 st.header('Data collection')
+
+st.write('Historical data on several FTSE 100 index companies will be collected, analyzed, and visualized in an attempt to gain insights into their equity market performance from 2014 to 2024. The market behavior of the index itself will also be analyzed.')
+text = """
+A relatively safe, however representative list of stocks has been identified (huge thanks to Alison Mitchell):
+
+- ULVR.L (Unilever)
+- SHEL.L (Shell)
+- GSK.L (GlaxoSmithKline)
+- AZN.L (AstraZeneca)
+- HSBA.L (HSBC)
+- BP.L (BP)
+
+This list represents a selection of different industries, namely - pharmaceuticals, oil, and finance.
+"""
+st.write(text)
 
 ftse100_stocks = yf.download("AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L", start=datetime.datetime(2014, 1, 1), 
                                      end=datetime.datetime(2023, 12, 31), group_by='tickers')
 ftse100_stocks.head(10)
 
-# Dicplaying distribution of the data with descriptive statistics
+st.write('Displaying distribution of the data with descriptive statistics')
 ftse100_stocks.describe()
 
-# Lets summarise the data to the ddataframe to see if any values of datatypes are missing 
+st.write('Lets summarise the data to the ddataframe to see if any values of datatypes are missing')
 ftse100_stocks.info()
 
-# Number of rows = number of trading days
+st.write('Number of rows represents the number of trading days')
 ftse100_stocks.shape
 
-# Dataframe to contain Adjusted Close price for each company's stock.
+st.write('Adjusted Close price for each company stock.') 
+
 
 adj_close = pd.DataFrame()
 
@@ -47,7 +63,6 @@ for ticker in tickers:
 
 adj_close
 
-# Plot Adjusted Close price for all stocks
 
 adj_close.plot(grid = True)
 sns.set(rc={'figure.figsize':(15, 9)})
@@ -55,7 +70,7 @@ plt.title('Adjusted Close Price for all stocks', color = 'black', fontsize = 20)
 plt.xlabel('Year', color = 'black', fontsize = 15)
 plt.ylabel('Adjusted Close Price (pence)', color = 'black', fontsize = 15);
 
-# Let's alculate min and max Adjusted Close price 
+st.write('Lets alculate min and max Adjusted Close price')
 
 adj_close_min_max = adj_close.apply(lambda x: pd.Series([x.min(), x.max()], 
                               index=['min', 'max']))
@@ -72,7 +87,7 @@ plt.title('Adjusted Close Price with two different scales', color = 'black', fon
 returns_lambda = adj_close.apply(lambda x: x / x[0])
 returns_lambda.head()
 
-# Plot return_{t,0}  = \frac{price_t}{price_0} with transformed data to gen an insight on how profitable the stock had been.
+# Plot return_{t,0}  = \frac{price_t}{price_0} with transformed data to get an insight on how profitable the stock had been.
 
 returns_lambda.plot(grid = True).axhline(y = 1, color = "black", lw = 2)
 sns.set(rc={'figure.figsize':(15, 9)})
