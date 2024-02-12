@@ -45,22 +45,26 @@ ftse100_stocks = yf.download("AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L", start=date
                                      end=datetime.datetime(2023, 12, 31), group_by='tickers')
 ftse100_stocks.head(10)
 st.dataframe(ftse100_stocks.head(10))
-
+#------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.write('Displaying distribution of the data with descriptive statistics')
 ftse100_stocks.describe()
 st.dataframe(ftse100_stocks.describe())
-
+#------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
-st.write('Lets summarise the data to the ddataframe to see if any values of datatypes are missing')
+st.write('Lets summarise the data to the dataframe to see if any values of datatypes are missing')
 ftse100_stocks.info()
-
+st.dataframe(ftse100_stocks.info())
+#------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.write('Number of rows represents the number of trading days')
 ftse100_stocks.shape
+st.dataframe(ftse100_stocks.shape)
+#------------------------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
 
 st.write('Adjusted Close price for each company stock.') 
 
