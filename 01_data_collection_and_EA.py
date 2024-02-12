@@ -20,7 +20,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 st.title('FTSE_100 Tech analysis')
 
-st.write(This  an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit).)
+st.write('This  an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit).')
 
 st.header('Data collection')
 
