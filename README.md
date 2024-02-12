@@ -2,7 +2,7 @@
 
 
 # Technical analysis
-This is a somewhat  outdated exercise in technical analysis, the notorious bread-and-butter activity for real traders. 
+This  an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit).
 
 **Wikipedia-like definition**: Technical analysis is the use of charts and technical indicators to identify trading signals and price patterns. 
 
