@@ -56,9 +56,10 @@ st.dataframe(description)
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.write('Lets summarise the data to the dataframe to see if any values of datatypes are missing')
-ftse100_stocks.info()
-info = ftse100_stocks.info()
-st.dataframe(info)
+buffer = StringIO()
+ftse100_stocks.info(buf=buffer)
+info_str = buffer.getvalue()
+st.text(info_str)
 #------------------------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
