@@ -182,7 +182,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('Change in profitability per day')
 st.write('Now let us create a dataframe to contain returns for each company stock to plot the change of each stock per day')
 returns = pd.DataFrame()
-st.dataframe(returns)
+st.dataframe(pd.DataFrame())
 
 #--------------------------------------------------------------------------------------------------------------------------------------
 # Divider
