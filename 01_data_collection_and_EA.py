@@ -350,59 +350,120 @@ sns.pairplot(returns.dropna())  # Using dropna() to remove NaN values for clean 
 plt.tight_layout()  # Adjust subplots to fit into the figure area.
 # Use st.pyplot() to display the plot
 st.pyplot(plt.gcf())  # plt.gcf() gets the current figure (created by sns.pairplot)
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Boxplots')
+text = """
+Box and whisker plots are a standardised way of displaying the distribution of data based on a five number summary:
+- minimum
+- first quartile (Q1)
+- median
+- third quartile
+- maximum
+The line going through the box is the median.
 
+Boxplots showing distribution of the returns data over the time period 
+"""
+st.write(text)
 
-
-
-# Boxplots showing distribution of the returns data over the time period 
-
+# Set the style for Seaborn plots
 sns.set_style("whitegrid")
+
+# Create a Matplotlib figure and axes
 fig, axs = plt.subplots(ncols=6, nrows=1, figsize=(20, 10))
+axs = axs.flatten()  # Flatten the axes array if needed
+
+# Plotting each column in 'returns' using Seaborn's boxplot
 index = 0
-axs = axs.flatten()
-for k,v in returns.items():
+for k, v in returns.items():
     sns.boxplot(y=k, data=returns, ax=axs[index])
     index += 1
+
+# Adjust layout
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=5.0)
 
+# Display the plot in Streamlit
+st.pyplot(fig)
 
-# Distribution plots showing the data for returns for 2023 
+text = """
+By comparing the interquartile ranges (box lengths), we can compare dispersion. If two boxes do not overlap with one another then there is a difference between the two groups. 
+We can see that ULVR. does not overlap with the other stocks. If we compare the respective medians and the median line of one box lies outside of another entirely, then there is likely to be a difference between the two groups. Again we can see that ULVR. is different.
 
+Whiskers show how big a range there is between maximum and minimum values, with larger ranges indicating wider distribution, that is, more scattered data. 
+We can look for signs of skewness suggesting that data may not be normally distributed. Skewed data show a lopsided box plot, where the median cuts the box into two unequal pieces. 
+If the longer part of the box is above the median, the data is said to be positively skewed. 
+If the longer part is or below the median, the data is negatively skewed.
+
+Any values in the data set that are more extreme than the adjacent values are plotted as separate points on the box plot. This identifies them as potential outliers.
+"""
+st.write(text)
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Distribution plots')
+st.write('Distribution plots depict the variation in the data distribution. Here the distribution of returns is shown by a histogram and a line in combination with it which is the kernel density estimate.')
+st.write('Distribution plots showing the data for returns for 2023')
+
+# Set the plotting style
 sns.set_style("white")
 
+# Define the tickers and prepare the figure and subplots
 tickers = ['AZN.L', 'GSK.L', 'ULVR.L', 'BP.L', 'SHEL.L', 'HSBA.L']
 fig, axs = plt.subplots(ncols=3, nrows=2, figsize=(20, 10))
-index = 0
 axs = axs.flatten()
 
-for ticker in tickers:
+# Plotting histograms with a KDE for each ticker
+for index, ticker in enumerate(tickers):
+    # Filtering the 'returns' DataFrame for the specified date range before plotting
     sns.histplot(returns.loc['2023-01-01':'2023-12-31'][ticker], color='green', bins=100, ax=axs[index], kde=True)
-    index += 1
 
+# Adjust layout for better fit and readability
+plt.tight_layout()
 
-# Covariance matrix to show direction of relationship between stocks' returns
+# Display the plot in Streamlit
+st.pyplot(fig)
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Covariance')
 
-returns.cov() 
+st.write('Covariance indicates the direction of the linear relationship between variables. It is a measure of the relationship between two stocks returns and can help determine if stocks returns tend to move with or against each other. Investors might even be able to select stocks that complement each other in terms of price movement. This can help reduce the overall risk and increase the overall potential return of a portfolio.')
+st.write('Covariance matrix to show direction of relationship between stocks returns')
+st.dataframe(returns.cov()) 
 
-# Correlation matrix to show strength and direction of relationship between stocks' returns
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Correlation')
+st.write('Correlation matrix to show strength and direction of relationship between stocks returns')
+st.dataframe(returns.corr())
 
-returns.corr()
-
-# The heatmap clearly shows the strength of correlation between pairs of company returns
+st.write('The heatmap clearly shows the strength of correlation between pairs of company returns')
 
 plt.figure(figsize=(10, 10))
 sns.heatmap(data = returns.corr(), vmax=.8, linewidths=0.5,  fmt='.2f',
             square=True,annot=True,cmap='YlGnBu',linecolor="white")
 plt.show()
+st.pyplot(plt)
 
+st.write('The strongest correlation can be observed between oil stocks (SHELL and BP), followed by the pharmaceutical stocks (GSK and AZN)') 
 
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('FTSE 100 Index data')
+st.write('Finally let us get data from the launch of the FTSE 100 Index in January 1984 to the end of 2023 as being representative of the UK stock market.') 
 # Download FTSE 100 historical stock data from Yahoo! Finance for 1984-2020
+st.write('Download FTSE 100 historical stock data from Yahoo! Finance for 1984-2020')
 
 ftse100_idx_to_2024 = yf.download("^FTSE", start=datetime.datetime(1984, 1, 1), 
                                      end=datetime.datetime(2024, 1, 1))
-ftse100_idx_to_2024
+st.dataframe(ftse100_idx_to_2024) 
 
-# Now let's visualize the data
+st.write('Now let us visualize the data')
+
 def ftse100_to_2024_plot():
     ftse100_idx_to_2024['Close'].plot(grid = True)
     sns.set(rc={'figure.figsize':(20, 10)})
@@ -415,7 +476,7 @@ def ftse100_to_2024_plot():
     plt.xlabel('Year', color = 'black', fontsize = 15)
     plt.ylabel('Close Price (pence)', color = 'black', fontsize = 15)
     plt.show();
+st.pyplot(ftse100_to_2024_plot())
 
-ftse100_to_2024_plot()
-
+st.write('To be continued :)')
 
