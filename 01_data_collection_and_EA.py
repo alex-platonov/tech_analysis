@@ -21,9 +21,9 @@ st.title('FTSE_100 Technical analysis')
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-st.write('This is an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit). The present page is step #1 in a 4-step analysis pipeline')
+st.write('This is an excercise in technical analysis wrapped up in a catchy web-app form (thanks to Streamlit). The present page (WIP) is step #1 in a 4-step analysis pipeline')
 
-st.write('Historical data on several FTSE 100 index companies will be collected, analyzed, and visualized in an attempt to gain insights into their equity market performance from 2014 to 2024. The market behavior of the index itself will also be analyzed.')
+st.write('Historical data on several FTSE 100 index constituent companies will be collected, analyzed, and visualized in an attempt to gain insights into their equity market performance from 2014 to 2024. The market behavior of the index itself will also be analyzed.')
 text = """
 A relatively safe, however representative list of stocks has been identified (huge thanks to Alison Mitchell):
 
@@ -34,7 +34,7 @@ A relatively safe, however representative list of stocks has been identified (hu
 - HSBA.L (HSBC)
 - BP.L (BP)
 
-This list represents a selection of different industries, namely - pharmaceuticals, oil, and finance.
+This list represents a selection of different industries, namely - pharmaceuticals, oil, and finance that will no doubt contribute to the overall statistical representativeness.
 """
 st.write(text)
 
@@ -152,7 +152,9 @@ st.pyplot(plt)
 st.markdown("<hr>", unsafe_allow_html=True) 
 st.subheader('Returns of each stock')
 st.markdown("""
-Next, we would want to see the returns of each stock. However, this requires transforming of the data to better suit our needs. So, we would want to plot $\(return_{t,0} = \frac{price_t}{price_0}$ by applying the lambda function to each column in an adjusted close dataframe.
+Next, we would want to see the returns of each of the stocks.
+However, this requires transforming of the data to better suit our needs. 
+So, we would want to plot $\(return_{t,0} = \frac{price_t}{price_0}$ by applying the lambda function to each column in an adjusted close dataframe.
 """, unsafe_allow_html=True)
 
 returns_lambda = adj_close.apply(lambda x: x / x[0])
@@ -162,112 +164,190 @@ st.dataframe(returns_lambda.head())
 #--------------------------------------------------------------------------------------------------------------------------------------
 # Divider
 st.markdown("<hr>", unsafe_allow_html=True)
-# Plot return_{t,0}  = \frac{price_t}{price_0} with transformed data to get an insight on how profitable the stock had been.
+st.subheader('Profitability of each stock')
+st.write('Plot return_{t,0}  = \frac{price_t}{price_0} with transformed data to get an insight on how profitable the stock had been.')
 
 returns_lambda.plot(grid = True).axhline(y = 1, color = "black", lw = 2)
 sns.set(rc={'figure.figsize':(15, 9)})
 plt.title('Stock returns for 10 year time period', color = 'black', fontsize = 20)
 plt.xlabel('Year', color = 'black', fontsize = 15)
 plt.ylabel('Returns (%)', color = 'black', fontsize = 15);
+st.pyplot(plt)
+st.write('Covid lockdown alterations could be clearly observed: HSBC for example plummeted down and had not recovered until late 2022, when AstraZeneca soared at the beginning of 2020. So we can clearly state that such plot is way more useful as we can observe not only the profitability of each stock, but also the correlation of some stocks (especially in the year 2020)')
 
-# Create dataframe to contain returns for each company's stock to plot the change of each stock per day
-
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Change in profitability per day')
+st.write('Now let us create a dataframe to contain returns for each company stock to plot the change of each stock per day')
 returns = pd.DataFrame()
+st.dataframe(returns)
 
-# This can be achieved with the pandas  pct_change() method which computes the percentage change from the previous row by default.
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Change in profitability per day in %')
+st.write('Another point of interest is the daily volatility (aka percentage change) with the formula increase_{t}  = \frac{price_t - price_{t-1}}{price_t}. This can be achieved with the pandas  pct_change() method which computes the percentage change from the previous row by default.')
 
 tickers = ['AZN.L', 'GSK.L', 'ULVR.L', 'BP.L', 'SHEL.L', 'HSBA.L']
 for ticker in tickers:
     returns[ticker] = ftse100_stocks[ticker]['Adj Close'].pct_change() * 100
+st.dataframe(returns)
 
-returns
-
-# Cleaning the data by dropping the NaN values
-
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Cleaning the data')
+st.write('Cleaning the data by dropping the NaN values')
 returns.dropna(inplace=True)
 returns.head()
-
-# Plot returns for 2023 that will show changes between trading days. THis is generally considered as a more advanced approach to modelling of equity behaviour.
+st.dataframe(returns.head())
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Stock reeturns for 2023')
+st.write('Plot returns for 2023 that will show changes between trading days. THis is generally considered as a more advanced approach to modelling of equity behaviour.')
 
 returns.loc['2023-01-01':'2023-12-31'].plot(grid = True).axhline(y = 1, color = "black", lw = 2)
 sns.set(rc={'figure.figsize':(15, 9)})
 plt.title('Stock returns for 2023', color = 'black', fontsize = 20)
 plt.xlabel('Date', color = 'black', fontsize = 15)
 plt.ylabel('Returns (%)', color = 'black', fontsize = 15);
+st.pyplot(plt)
 
-# Use numpy's log function to obtain and plot the log differences of the adjusted price data
-
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Log differences of the adjusted price data')
+text = """
+Another way to explore stock growth is with log differences. Taking the natural log of the prices will give an approximation to the true daily returns.
+This can be represented with the formula 𝑐ℎ𝑎𝑛𝑔𝑒𝑡  =  𝑙𝑜𝑔(𝑝𝑟𝑖𝑐𝑒𝑡)−𝑙𝑜𝑔(𝑝𝑟𝑖𝑐𝑒𝑡−1)
+According to the Financial math textbook: 
+Using logs, or summarising changes in terms of continuous compounding, has a number of advantages over looking at simple percent changes. 
+For example, if your portfolio goes up by 50% (say from £100 to £150) and then declines by 50% (say from £150 to £75), you’re not back where you started. 
+If you calculate your average percentage return (in this case, 0%), that’s not a particularly useful summary of the fact that you actually ended up 25% below where you started.
+By contrast, if your portfolio goes up in logarithmic terms by 0.5, and then falls in logarithmic terms by 0.5, you are exactly back where you started. 
+The average log return on your portfolio is exactly the same number as the change in log price between the time you bought it and the time you sold it, 
+divided by the number of years that you held it.
+"""
+st.write(text)
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.write('Use numpy log function to obtain and plot the log differences of the adjusted price data')
 stock_change = adj_close.apply(lambda x: np.log(x) - np.log(x.shift(1))) # shift moves dates back by 1.
-
 stock_change.head()
+st.dataframe(stock_change.head())
 
-# Clean up the data by dropping NaNs
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.write('Clean up the data by dropping NaN values')
 
 stock_change.dropna(inplace=True)
 stock_change.head()
+st.dataframe(stock_change.head())
 
-# Plot log differences for 2014-2024
-
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.write('Plot log differences for 2014-2024')
 stock_change.plot(grid = True).axhline(y = 0, color = "black", lw = 2)
 sns.set(rc={'figure.figsize':(15, 9)})
 plt.title('Log differences of stocks for 10 year time period', color = 'black', fontsize = 20)
 plt.xlabel('Year', color = 'black', fontsize = 15)
 plt.ylabel('Natural log', color = 'black', fontsize = 15);
-
-# Plot log differences for 2023 (since 2024 has just begun)
-
+st.pyplot(plt)
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.write('Plot log differences for 2023 (since 2024 has just begun)')
 stock_change.loc['2023-01-01':'2023-12-31'][1:].plot(grid = True).axhline(y = 0, color = "black", lw = 2)
 sns.set(rc={'figure.figsize':(15, 9)})
 plt.title('Log differences of stocks for 2023', color = 'black', fontsize = 20)
 plt.xlabel('Year', color = 'black', fontsize = 15)
 plt.ylabel('Natural log', color = 'black', fontsize = 15);
+st.pyplot(plt)
 
-# To keep the returns on the same time scale - the annual percentage rate needs to be computed
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.write('To keep the returns on the same time scale - the annual percentage rate needs to be computed')
 stock_change_apr = stock_change * 252 * 100    # There are 252 trading days in a year; the 100 converts to percentages
-
-stock_change_apr
-
-# Plotting annualised returns for the last year (2023)
-
+st.dataframe(stock_change_apr)
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.write('Plotting annualised returns for the last year (2023)')
 stock_change_apr['2023-01-01':'2023-12-31'].plot(grid = True).axhline(y = 0, color = "black", lw = 2)
 sns.set(rc={'figure.figsize':(15, 9)})
 plt.title('Annual percentage rate (APR) for 2023', color = 'black', fontsize = 20)
 plt.xlabel('Date', color = 'black', fontsize = 15)
 plt.ylabel('APR', color = 'black', fontsize = 15);
-
-# Worst single day returns
-
+st.pyplot(plt)
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.write('Worst single day returns')
 returns.idxmin()
-
-# Best single day returns
-
+st.dataframe(returns.idxmin())
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.write('Best single day returns')
 returns.idxmax()
-
-
-# Computing mean to give a representation of the average expected returns 
-
+st.dataframe(returns.idxmax())
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Mean')
+st.write('The mean is used to estimate the performance of a company stock price over a particular time period. Here it is the average of the returns, and also determines the standard deviation and variance.')
+st.write('Computing mean to give a representation of the average expected returns')
 returns.mean()
-
-# Computing variance to give a measure of the dispersion of returns around the mean
-
+st.dataframe(returns.mean())
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Variance')
+st.write('Variance measures variability from the average or mean. It correlates to the size of the overall range of the data set, being greater when there is a wider range and narrower when there is a narrower range. It is calculated by taking the differences between each value in the data set and the mean, squaring the differences to make them positive, and dividing the sum of the squares by the number of values in the data set. The calculation of variance uses squares because it weighs outliers more heavily than data closer to the mean. This calculation also prevents differences above the mean from cancelling out those below, which would result in a variance of zero. Variance formula σ<sup>2</sup> = \frac {\sum_{i = 1}^n (x_i - \overline{x})^2}{n}')
+st.write('Computing variance to give a measure of the dispersion of returns around the mean')
 returns.var()
-
-# Computing the standard deviation to describe variability in the stock returns from the mean 
- 
+st.dataframe(returns.var())
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Standard deviation')
+st.write('Standard deviation (σ) is often used by investors to measure the risk of a stock or a stock portfolio, the basic idea being that it is a measure of volatility. It looks at how far from the mean a group of values is, and is calculated as the square root of variance by figuring out the variation between each data point relative to the mean. Essentially, it is the square root of the average squared deviation from the mean, and the more spread out the values are, the higher the standard deviation.')
+st.write('Computing the standard deviation to describe variability in the stock returns from the mean')
 returns.std()
-
-# Computing skewness to measure the asymmetry of the data around its mean
-
+st.dataframe(returns.std())
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Skewness')
+st.write('Financial returns are typically positively or negatively skewed and warp the look of the normally distributed bell-shaped curve distorting the accuracy of standard deviation as a measure of risk. Skewness essentially measures the relative size of the two tails of the distribution.')
+st.write('Computing skewness to measure the asymmetry of the data around its mean')
 returns.skew()
-
-# Computing kurtosis as a measure of the combined sizes of the two tails.
-
+st.dataframe(returns.skew())
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Kurtosis')
+st.write('Kurtosis is a measure of the combined sizes of the two tails - not the peakedness or flatness. It measures the tail-heaviness of the distribution, or amount of probability in the tails.')
+st.write('Computing kurtosis as a measure of the combined sizes of the two tails.')
 returns.kurt()
+st.dataframe(returns.kurt())
 
-# Pairplot of returns dataframe 
-
+st.write('A normal distribution has a kurtosis of 3, however the pandas kurtosis function makes it a uniform zero and in this case the measure is called excess kurtosis. Since the analysed decade had both calm years at the beginning and super-turbulent 2020/2021/2022/2023 nearly all of our honorable guinea pigs demonstrate excess kurtosis.')
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Divider
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Data visualisation')
+st.write('Plot pairwise relationships of the stocks with the pairplot() function which uses scatterplot() for each pairing of the variables and histplot() for the marginal plots along the diagonal.')
+st.write('Pairplot of returns dataframe')
 sns.pairplot(returns);
-
+plt.tight_layout()  # Adjust subplots to fit into the figure area.
+st.pyplot(plt.gcf())
 # Boxplots showing distribution of the returns data over the time period 
 
 sns.set_style("whitegrid")
