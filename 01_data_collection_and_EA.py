@@ -465,18 +465,31 @@ st.dataframe(ftse100_idx_to_2024)
 st.write('Now let us visualize the data')
 
 def ftse100_to_2024_plot():
-    ftse100_idx_to_2024['Close'].plot(grid = True)
-    sns.set(rc={'figure.figsize':(20, 10)})
-    plt.axvspan('1987','1989',color='r',alpha=.5)
-    plt.axvspan('2008','2010',color='r',alpha=.5)
-    plt.axvspan('2020','2024',color='r',alpha=.5)
-    labs = mpatches.Patch(color='red',alpha=.5, label="Black Monday, 2008 Crash, Covid-19 fall and its aftermath")
-    plt.legend(handles=[labs], prop={"size":15},  bbox_to_anchor=(0.4, 0.1), loc='upper center', borderaxespad=0.)
-    plt.title('Close Price for FTSE 100 stocks', color = 'black', fontsize = 20)
-    plt.xlabel('Year', color = 'black', fontsize = 15)
-    plt.ylabel('Close Price (pence)', color = 'black', fontsize = 15)
-    plt.show();
-st.pyplot(ftse100_to_2024_plot())
+    plt.figure(figsize=(20, 10))  # Set the figure size for the plot
+    sns.set_style("whitegrid")  # Set the Seaborn style
+    
+    # Plotting the 'Close' prices
+    ftse100_idx_to_2024['Close'].plot(grid=True)
+    
+    # Highlight significant periods with red spans
+    plt.axvspan('1987', '1989', color='r', alpha=0.5)
+    plt.axvspan('2008', '2010', color='r', alpha=0.5)
+    plt.axvspan('2020', '2024', color='r', alpha=0.5)
+    
+    # Adding a custom legend
+    labs = mpatches.Patch(color='red', alpha=0.5, label="Black Monday, 2008 Crash, Covid-19 fall and its aftermath")
+    plt.legend(handles=[labs], prop={"size":15}, bbox_to_anchor=(0.4, 0.1), loc='upper center', borderaxespad=0.)
+    
+    # Setting title and labels
+    plt.title('Close Price for FTSE 100 stocks', color='black', fontsize=20)
+    plt.xlabel('Year', color='black', fontsize=15)
+    plt.ylabel('Close Price (pence)', color='black', fontsize=15)
+
+# Call the function to plot
+ftse100_to_2024_plot()
+
+# Use st.pyplot() to display the plot in Streamlit
+st.pyplot(plt.gcf())  # plt.gcf() gets the current figure
 
 st.write('To be continued :)')
 
