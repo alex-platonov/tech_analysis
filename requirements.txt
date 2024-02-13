@@ -10,7 +10,7 @@ scikit-learn  # Scikit-learn: Machine learning.
 keras  # Keras: NN API, running on top of TensorFlow.
 tensorflow  # TensorFlow: machine learning and artificial intelligence.
 yfinance  # Yfinance: download financial data from Yahoo Finance.
-mlpfinance
+mplfinance
 beautifulsoup4  # BeautifulSoup: web scraping, parsing HTML and XML documents.
 selenium  # Selenium: automating web browser interaction.
 nltk  # NLTK: Natural Language Toolkit (self explanatory).
