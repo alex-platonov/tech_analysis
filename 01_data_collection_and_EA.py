@@ -18,6 +18,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 #%matplotlib inline
 
 st.title('FTSE_100 Technical analysis')
+st.image('https://github.com/alex-platonov/tech_analysis/blob/main/technical-analysis-vs-fundamental-analysis.jpg', caption='Step 1', use_column_width=True)
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
