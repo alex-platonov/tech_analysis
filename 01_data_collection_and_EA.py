@@ -345,9 +345,15 @@ st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('Data visualisation')
 st.write('Plot pairwise relationships of the stocks with the pairplot() function which uses scatterplot() for each pairing of the variables and histplot() for the marginal plots along the diagonal.')
 st.write('Pairplot of returns dataframe')
-sns.pairplot(returns);
+sns.pairplot(returns); # Plot the pairplot with Seaborn
+sns.pairplot(returns.dropna())  # Using dropna() to remove NaN values for clean plotting
 plt.tight_layout()  # Adjust subplots to fit into the figure area.
-st.pyplot(sns.pairplot(returns))
+# Use st.pyplot() to display the plot
+st.pyplot(plt.gcf())  # plt.gcf() gets the current figure (created by sns.pairplot)
+
+
+
+
 # Boxplots showing distribution of the returns data over the time period 
 
 sns.set_style("whitegrid")
