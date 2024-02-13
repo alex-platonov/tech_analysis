@@ -23,6 +23,8 @@ Apart from that, various volatility and volume indicators will be explored:
 ## Data collection and Exploratory Data Analysis (EDA)
 Historical data on several FTSE 100 index companies will be collected, analyzed, and visualized in an attempt to gain insights into their equity market performance from 2014 to 2024. The market behavior of the index itself will also be analyzed. 
 
+Live demo is available here: https://techanalysis-8zz9ru24q8kcvnue2tuh4f.streamlit.app/
+
 A relatively safe, however representative list of stocks has been identified (huge thanks to Alison Mitchell):
 - ULVR.L (Unilever)
 - SHEL.L (Shell)
