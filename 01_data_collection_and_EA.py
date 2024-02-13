@@ -347,7 +347,7 @@ st.write('Plot pairwise relationships of the stocks with the pairplot() function
 st.write('Pairplot of returns dataframe')
 sns.pairplot(returns);
 plt.tight_layout()  # Adjust subplots to fit into the figure area.
-st.pyplot(plt.gcf())
+st.pyplot(sns.pairplot(returns))
 # Boxplots showing distribution of the returns data over the time period 
 
 sns.set_style("whitegrid")
