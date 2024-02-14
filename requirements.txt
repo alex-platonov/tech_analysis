@@ -1,21 +1,21 @@
-numpy  # NumPy:computing and array operations.
-pandas  # Pandas: Data analysis and manipulation.
-matplotlib  # Matplotlib: creating visualizations.
-mplfinance  # Mplfinance: visualizing financial data.
-seaborn  # Seaborn: Statistical data visualization based on Matplotlib.
-plotly  # Plotly: interactive plotting.
-scipy  # SciPy: mathematics and engineering.
-statsmodels  # Statsmodels: Statistical modeling and econometrics.
-scikit-learn  # Scikit-learn: Machine learning.
-keras  # Keras: NN API, running on top of TensorFlow.
-tensorflow  # TensorFlow: machine learning and artificial intelligence.
-yfinance  # Yfinance: download financial data from Yahoo Finance.
-mplfinance
-beautifulsoup4  # BeautifulSoup: web scraping, parsing HTML and XML documents.
-selenium  # Selenium: automating web browser interaction.
-nltk  # NLTK: Natural Language Toolkit (self explanatory).
-textblob  # TextBlob: processing textual data.
-spacy  # SpaCy: advanced NLP.
-gensim  # Gensim: unsupervised topic modeling and more NLP.
-transformers  # Transformers: BERT ML models for NLP from Hugging Face.
-torch  # PyTorch: ML and ML.
+numpy  #NumPy:computing and array operations.
+pandas  #Pandas: Data analysis and manipulation.
+matplotlib  #Matplotlib: creating visualizations.
+mplfinance  #Mplfinance: visualizing financial data.
+seaborn  #Seaborn: Statistical data visualization based on Matplotlib.
+plotly  #Plotly: interactive plotting.
+scipy  #SciPy: mathematics and engineering.
+statsmodels  #Statsmodels: Statistical modeling and econometrics.
+scikit-learn  #Scikit-learn: Machine learning.
+keras  #Keras: NN API, running on top of TensorFlow.
+tensorflow  #TensorFlow: machine learning and artificial intelligence.
+yfinance  #Yfinance: download financial data from Yahoo Finance.
+mplfinance #Financial Markets Data visualization
+beautifulsoup4  #BeautifulSoup: web scraping, parsing HTML and XML documents.
+selenium  #Selenium: automating web browser interaction.
+nltk  #NLTK: Natural Language Toolkit (self explanatory).
+textblob  #TextBlob: processing textual data.
+spacy  #SpaCy: advanced NLP.
+gensim  #Gensim: unsupervised topic modeling and more NLP.
+transformers  #Transformers: BERT ML models for NLP from Hugging Face.
+torch  #PyTorch: ML and ML.
