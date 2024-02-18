@@ -48,7 +48,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 
 st.subheader('Visualising stock data')
 st.write('Japanese candlestick charts are tools used in a particular trading style called price action to predict market movement through pattern recognition of continuations, breakouts, and reversals. Unlike a line chart, all of the price information can be viewed in one figure showing the high, low, open, and close price of the day or chosen time frame. Price action traders observe patterns formed by green bullish candles where the stock is trending upwards over time, and red bearish candles where there is a downward trend.')
-ef pandas_candlestick_ohlc(dat, stick="day", otherseries=None, txt=""):
+def pandas_candlestick_ohlc(dat, stick="day", otherseries=None, txt=""):
     """
     Japanese candlestick chart showing OHLC prices for a specified time period
 
