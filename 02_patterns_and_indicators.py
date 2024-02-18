@@ -41,7 +41,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('The Honorable Guinea Pig')
 st.write('HSBC stock (HSBA.L) will be selected for plotting charts and testing various trading strategies for no specific reason other than personal preference.')
 
-sba =  ftse100_stocks['HSBA.L']
+hsba =  ftse100_stocks['HSBA.L']
                                      
 st.dataframe(hsba.head())
 #--------------------------------------------------------------------------------------------------------------------
