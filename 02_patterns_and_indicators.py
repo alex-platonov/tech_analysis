@@ -48,7 +48,7 @@ st.dataframe(hsba.head())
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.subheader('Visualising stock data')
-st.write('Japanese candlestick charts are tools used in a particular trading style called price action to predict market movement through pattern recognition of continuations, breakouts, and reversals. Unlike a line chart, all of the price information can be viewed in one figure showing the high, low, open, and close price of the day or chosen time frame. Price action traders observe patterns formed by green bullish candles where the stock is trending upwards over time, and red bearish candles where there is a downward trend.')
+st.write('For some initial visualization we are going to use a Japanese candlestick chart. Such carts are widely used in a particular trading style called price action to predict market movement through pattern recognition of continuations, breakouts, and reversals. Unlike a line chart, all of the price information can be viewed in one figure that shows the high, low, open, and close price of the day or chosen time frame. Price action traders observe patterns formed by green bullish candles where the stock is trending upwards over time, and red bearish candles where there is a downward trend.')
 st.set_option('deprecation.showPyplotGlobalUse', False)
 def pandas_candlestick_ohlc(dat, stick="day", otherseries=None, txt=""):
     """
@@ -120,3 +120,38 @@ def pandas_candlestick_ohlc(dat, stick="day", otherseries=None, txt=""):
     plt.show()
 
 st.pyplot(pandas_candlestick_ohlc(hsba, stick="month"))
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.header('Technical Indicators and Strategies')
+
+st.text('Let us begin with a textbook definition: A technical indicator is a series of data points that are derived by applying a formula to the price data of a security. They are price-derived indicators that use formulas to translate the momentum or price levels into quantifiable time series. There are two categories of indicators: leading and lagging, and four types: trend, momentum, volatility, and volume, which serve three broad functions: to alert, to confirm, and to predict.')
+
+st.subheader('Trend-following strategies')
+st.text('Trend-following is about profiting from the prevailing trend through buying an asset when its price trend goes up, and selling when its trend goes down, expecting price movements to continue.')
+
+st.subheader('Moving averages')
+st.text('Moving averages smooth a series filtering out the noise to help identify trends, one of the fundamental principles of technical analysis being that prices move in trends. Types of moving averages include simple, exponential, smoothed, linear-weighted, MACD, and lagging indicators they follow the price action and are commonly referred to as trend-following indicators.')
+
+st.subheader('Simple Moving Average (SMA)')
+st.text('The simplest form of a moving average, known as a Simple Moving Average (SMA), is calculated by taking the arithmetic mean of a given set of values over a set time period. This model is probably the most naive approach to time series modeling and simply states that the next observation is the mean of all past observations and each value in the time period carries equal weight.')
+
+st.text('Modelling this an as average calculation problem we would try to predict the future stock market prices (for example, xt+1 ) as an average of the previously observed stock market prices within a fixed size window (for example, xt-n, ..., xt). This helps smooth out the price data by creating a constantly updated average price so that the impacts of random, short-term fluctuations on the price of a stock over a specified time frame are mitigated.')
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+ef sma():
+  plt.figure(figsize=(15,9))
+  ftse100_stocks[ticker]['Adj Close'].loc['2023-01-01':'2023-12-31'].rolling(window=20).mean().plot(label='20 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2023-01-01':'2023-12-31'].plot(label=f"{label_txt}")
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
+ticker = 'HSBA.L'
+title_txt = "20-day Simple Moving Average for HSBA.L stock"
+label_txt = "HSBA.L Adj Close"
+
+st.pyplot(sma())
