@@ -15,6 +15,7 @@ from statsmodels.tsa.stattools import coint
 import datetime
 from datetime import date, timedelta
 import warnings
+import streamlit as st
 warnings.filterwarnings('ignore')
 
 st.title('FTSE_100 Technical analysis')
