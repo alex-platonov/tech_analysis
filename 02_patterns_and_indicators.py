@@ -125,18 +125,18 @@ st.markdown("<hr>", unsafe_allow_html=True)
 
 st.header('Technical Indicators and Strategies')
 
-st.text('Let us begin with a textbook definition: A technical indicator is a series of data points that are derived by applying a formula to the price data of a security. They are price-derived indicators that use formulas to translate the momentum or price levels into quantifiable time series. There are two categories of indicators: leading and lagging, and four types: trend, momentum, volatility, and volume, which serve three broad functions: to alert, to confirm, and to predict.')
+st.write('Let us begin with a textbook definition: A technical indicator is a series of data points that are derived by applying a formula to the price data of a security. They are price-derived indicators that use formulas to translate the momentum or price levels into quantifiable time series. There are two categories of indicators: leading and lagging, and four types: trend, momentum, volatility, and volume, which serve three broad functions: to alert, to confirm, and to predict.')
 
 st.subheader('Trend-following strategies')
-st.text('Trend-following is about profiting from the prevailing trend through buying an asset when its price trend goes up, and selling when its trend goes down, expecting price movements to continue.')
+st.write('Trend-following is about profiting from the prevailing trend through buying an asset when its price trend goes up, and selling when its trend goes down, expecting price movements to continue.')
 
 st.subheader('Moving averages')
-st.text('Moving averages smooth a series filtering out the noise to help identify trends, one of the fundamental principles of technical analysis being that prices move in trends. Types of moving averages include simple, exponential, smoothed, linear-weighted, MACD, and lagging indicators they follow the price action and are commonly referred to as trend-following indicators.')
+st.write('Moving averages smooth a series filtering out the noise to help identify trends, one of the fundamental principles of technical analysis being that prices move in trends. Types of moving averages include simple, exponential, smoothed, linear-weighted, MACD, and lagging indicators they follow the price action and are commonly referred to as trend-following indicators.')
 
 st.subheader('Simple Moving Average (SMA)')
-st.text('The simplest form of a moving average, known as a Simple Moving Average (SMA), is calculated by taking the arithmetic mean of a given set of values over a set time period. This model is probably the most naive approach to time series modeling and simply states that the next observation is the mean of all past observations and each value in the time period carries equal weight.')
+st.write('The simplest form of a moving average, known as a Simple Moving Average (SMA), is calculated by taking the arithmetic mean of a given set of values over a set time period. This model is probably the most naive approach to time series modeling and simply states that the next observation is the mean of all past observations and each value in the time period carries equal weight.')
 
-st.text('Modelling this an as average calculation problem we would try to predict the future stock market prices (for example, xt+1 ) as an average of the previously observed stock market prices within a fixed size window (for example, xt-n, ..., xt). This helps smooth out the price data by creating a constantly updated average price so that the impacts of random, short-term fluctuations on the price of a stock over a specified time frame are mitigated.')
+st.write('Modelling this an as average calculation problem we would try to predict the future stock market prices (for example, xt+1 ) as an average of the previously observed stock market prices within a fixed size window (for example, xt-n, ..., xt). This helps smooth out the price data by creating a constantly updated average price so that the impacts of random, short-term fluctuations on the price of a stock over a specified time frame are mitigated.')
 
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
