@@ -155,3 +155,76 @@ title_txt = "20-day Simple Moving Average for HSBA.L stock"
 label_txt = "HSBA.L Adj Close"
 
 st.pyplot(sma())
+st.write('The SMA follows the time series removing noise from the signal and keeping the relevant information about the trend. If the stock price is above its moving average it is assumed that it will likely continue rising in an uptrend.')
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.subheader('Moving Average Crossover Strategy')
+st.write('The most popular moving average crossover strategy, and the "Hello World!" of quantitative trading, being the easiest to construct, is based on the simple moving average. When moving averages cross, it is usually confirmation of a change in the prevailing trend, and we want to test whether over the long-term the lag caused by the moving average can still give us profitable trades.')
+
+st.write('Depending on the type of investor or trader (high risk vs. low risk, short-term vs. long-term trading), you can adjust your moving ‘time’ average (10 days, 20 days, 50 days, 200 days, 1 year, 5 years, etc). The longer the period of an SMA, the longer the time horizon of the trend it spots. The most commonly used SMA periods are 20 for short-term (swing) trading, 50 for medium-term (position) trading, and 200 for long-term (portfolio) trading.')
+
+st.write('There is no single right answer and this will vary according to whether a trader is planning to buy when the trend is going down and sell when it is going up, potentially making short-term gains, or to hold for more long-term investment.')
+
+def sma2():
+  plt.figure(figsize=(15,9))
+  ftse100_stocks[ticker]['Adj Close'].loc['2020-01-01':'2023-12-31'].rolling(window=20).mean().plot(label='20 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2020-01-01':'2023-12-31'].rolling(window=50).mean().plot(label='50 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2020-01-01':'2023-12-31'].rolling(window=200).mean().plot(label='200 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2020-01-01':'2023-12-31'].plot(label=f"{label_txt}")
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
+ticker = 'HSBA.L'
+
+title_txt = "20, 50 and 200 day moving averages for HSBA.L stock"
+label_txt = "HSBA.L Adj Close"
+
+st.pyplot(sma2())
+
+
+st.write('The chart shows that the 20-day moving average is the most sensitive to local changes, and the 200-day moving average the least. Here, the 200-day moving average indicates an overall bullish trend - the stock is trending upward over time. The 20- and 50-day moving averages are at times bearish and at other times bullish.')
+
+st.write('The major drawback of moving averages, however, is that because they are lagging, and smooth out prices, they tend to recognize reversals too late and are therefore not very helpful when used alone.')
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.write('For statistical accuracy, we should plot the same 20, 50 and 200 days MA for a company of the same sector, however, we happened to select HSBC - the only company from banking in the list of our honorable guinea pigs. So let us do a GlaxoSmithKline Adjusted Close price data for the same time period, just for the sake of it.') 
+
+ticker = 'GSK.L'
+
+title_txt = "20, 50 and 200 day moving averages for GSK.L stock"
+label_txt = "GSK.L Adj Close"
+
+st.pyplot(sma2())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.subheader('Trading Strategy')
+st.write('The moving average crossover trading strategy will be to take two moving averages - 20-day (fast) and 200-day (slow) - and to go long (buy) when the fast MA goes above the slow MA and to go short (sell) when the fast MA goes below the slow MA.')
+
+st.write('Let us reate copy of dataframe for HSBC data for 2014-2024')
+
+hsba_sma = hsba.copy()
+st.dataframe(hsba.sma())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.write('Let us calculate and add columns for moving averages of Adjusted Close price data')
+  
+hsba_sma["20d"] = np.round(hsba_sma["Adj Close"].rolling(window = 20, center = False).mean(), 2)
+hsba_sma["50d"] = np.round(hsba_sma["Adj Close"].rolling(window = 50, center = False).mean(), 2)
+hsba_sma["200d"] = np.round(hsba_sma["Adj Close"].rolling(window = 200, center = False).mean(), 2)
+
+st.dataframe(hsba_sma.tail())
+
+txt = "20, 50 and 200 day moving averages for HSBA.L stock"
+
+st.write('Slice rows to plot data from 2019-2023')
+st.pyplot(pandas_candlestick_ohlc(hsba_sma.loc['2019-01-01':'2023-12-31',:], otherseries = ["20d", "50d", "200d"]))
