@@ -141,7 +141,7 @@ st.text('Modelling this an as average calculation problem we would try to predic
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
-ef sma():
+def sma():
   plt.figure(figsize=(15,9))
   ftse100_stocks[ticker]['Adj Close'].loc['2023-01-01':'2023-12-31'].rolling(window=20).mean().plot(label='20 Day Avg')
   ftse100_stocks[ticker]['Adj Close'].loc['2023-01-01':'2023-12-31'].plot(label=f"{label_txt}")
