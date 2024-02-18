@@ -1,240 +1,120 @@
 import yfinance as yf
-
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.style as style
-import matplotlib.patches as mpatches
-from matplotlib.dates import date2num, DateFormatter, WeekdayLocator,\
-    DayLocator, MONDAY
-from mplfinance.original_flavor import candlestick_ohlc
+from matplotlib.dates import date2num, DateFormatter, WeekdayLocator, DayLocator, MONDAY
 import seaborn as sns
-
+import mplfinance as mpf
+from mplfinance.original_flavor import candlestick_ohlc
+from scipy import stats
+from scipy.stats import zscore
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.stattools import coint
 import datetime
 from datetime import date, timedelta
-
 import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.filterwarnings('ignore')
 
-%matplotlib inline
+st.title('FTSE_100 Technical analysis')
+st.subheader('Step 2: Patterns and Indicators')
+st.image('https://raw.githubusercontent.com/alex-platonov/tech_analysis/main/02_patterns_and_indicators.jpg')
+
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.subheader('Introduction')
+st.write('Technical analysis is the use of charts and technical indicators to identify trading signals and price patterns. Various technical strategies will be investigated using the most common indicators.')
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.write('Let us begin again by downloading FTSE 100 stock data from Yahoo! Finance and storing it in a pandas dataframe. The same constituent companies as in Step - 1 will be selected.')
 
 ftse100_stocks = yf.download("AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L", start=datetime.datetime(2014, 1, 1), 
                                      end=datetime.datetime(2023, 12, 31), group_by='tickers')
-ftse100_stocks.head(10)
-
-# Dicplaying distribution of the data with descriptive statistics
-ftse100_stocks.describe()
-
-# Lets summarise the data to the ddataframe to see if any values of datatypes are missing 
-ftse100_stocks.info()
-
-# Number of rows = number of trading days
-ftse100_stocks.shape
-
-# Dataframe to contain Adjusted Close price for each company's stock.
-
-adj_close = pd.DataFrame()
-
-tickers = ['AZN.L', 'GSK.L', 'ULVR.L', 'BP.L', 'SHEL.L', 'HSBA.L']
-for ticker in tickers:
-    adj_close[ticker] = ftse100_stocks[ticker]['Adj Close']
-
-adj_close
-
-# Plot Adjusted Close price for all stocks
-
-adj_close.plot(grid = True)
-sns.set(rc={'figure.figsize':(15, 9)})
-plt.title('Adjusted Close Price for all stocks', color = 'black', fontsize = 20)
-plt.xlabel('Year', color = 'black', fontsize = 15)
-plt.ylabel('Adjusted Close Price (pence)', color = 'black', fontsize = 15);
-
-# Let's alculate min and max Adjusted Close price 
-
-adj_close_min_max = adj_close.apply(lambda x: pd.Series([x.min(), x.max()], 
-                              index=['min', 'max']))
-
-adj_close_min_max
-
- Plot BP.L and HSBA.L data on a secondary y-axis
-
-adj_close.plot(secondary_y = ["BP.L", "HSBA.L"], grid = True)
-sns.set(rc={'figure.figsize':(15, 9)})
-plt.title('Adjusted Close Price with two different scales', color = 'black', fontsize = 20);
-
-# So we would want to plot return_{t,0}  = \frac{price_t}{price_0} by applying the lambda function to each column in an adjusted close datatframe.
-returns_lambda = adj_close.apply(lambda x: x / x[0])
-returns_lambda.head()
-
-# Plot return_{t,0}  = \frac{price_t}{price_0} with transformed data to gen an insight on how profitable the stock had been.
-
-returns_lambda.plot(grid = True).axhline(y = 1, color = "black", lw = 2)
-sns.set(rc={'figure.figsize':(15, 9)})
-plt.title('Stock returns for 10 year time period', color = 'black', fontsize = 20)
-plt.xlabel('Year', color = 'black', fontsize = 15)
-plt.ylabel('Returns (%)', color = 'black', fontsize = 15);
-
-# Create dataframe to contain returns for each company's stock to plot the change of each stock per day
-
-returns = pd.DataFrame()
-
-# This can be achieved with the pandas  pct_change() method which computes the percentage change from the previous row by default.
-
-tickers = ['AZN.L', 'GSK.L', 'ULVR.L', 'BP.L', 'SHEL.L', 'HSBA.L']
-for ticker in tickers:
-    returns[ticker] = ftse100_stocks[ticker]['Adj Close'].pct_change() * 100
-
-returns
-
-# Cleaning the data by dropping the NaN values
-
-returns.dropna(inplace=True)
-returns.head()
-
-# Plot returns for 2023 that will show changes between trading days. THis is generally considered as a more advanced approach to modelling of equity behaviour.
-
-returns.loc['2023-01-01':'2023-12-31'].plot(grid = True).axhline(y = 1, color = "black", lw = 2)
-sns.set(rc={'figure.figsize':(15, 9)})
-plt.title('Stock returns for 2023', color = 'black', fontsize = 20)
-plt.xlabel('Date', color = 'black', fontsize = 15)
-plt.ylabel('Returns (%)', color = 'black', fontsize = 15);
-
-#Use numpy's log function to obtain and plot the log differences of the adjusted price data
-
-stock_change = adj_close.apply(lambda x: np.log(x) - np.log(x.shift(1))) # shift moves dates back by 1.
-
-stock_change.head()
-
-# Clean up the data by dropping NaNs
-
-stock_change.dropna(inplace=True)
-stock_change.head()
-
-# Plot log differences for 2014-2024
-
-stock_change.plot(grid = True).axhline(y = 0, color = "black", lw = 2)
-sns.set(rc={'figure.figsize':(15, 9)})
-plt.title('Log differences of stocks for 10 year time period', color = 'black', fontsize = 20)
-plt.xlabel('Year', color = 'black', fontsize = 15)
-plt.ylabel('Natural log', color = 'black', fontsize = 15);
-
-# Plot log differences for 2023 (since 2024 has just begun)
-
-stock_change.loc['2023-01-01':'2023-12-31'][1:].plot(grid = True).axhline(y = 0, color = "black", lw = 2)
-sns.set(rc={'figure.figsize':(15, 9)})
-plt.title('Log differences of stocks for 2023', color = 'black', fontsize = 20)
-plt.xlabel('Year', color = 'black', fontsize = 15)
-plt.ylabel('Natural log', color = 'black', fontsize = 15);
-
-#To keep the returns on the same time scale - the annual percentage rate needs to be computed
-stock_change_apr = stock_change * 252 * 100    # There are 252 trading days in a year; the 100 converts to percentages
-
-stock_change_apr
-
- Plotting annualised returns for the last year (2023)
-
-stock_change_apr['2023-01-01':'2023-12-31'].plot(grid = True).axhline(y = 0, color = "black", lw = 2)
-sns.set(rc={'figure.figsize':(15, 9)})
-plt.title('Annual percentage rate (APR) for 2023', color = 'black', fontsize = 20)
-plt.xlabel('Date', color = 'black', fontsize = 15)
-plt.ylabel('APR', color = 'black', fontsize = 15);
-
-# Worst single day returns
-
-returns.idxmin()
-
-# Best single day returns
-
-returns.idxmax()
-
-
-# Computing mean to give a representation of the average expected returns 
-
-returns.mean()
-
-# Computing variance to give a measure of the dispersion of returns around the mean
-
-returns.var()
-
-# Computing the standard deviation to describe variability in the stock returns from the mean 
- 
-returns.std()
-
-# Computing skewness to measure the asymmetry of the data around its mean
-
-returns.skew()
-
-# Computing kurtosis as a measure of the combined sizes of the two tails.
-
-returns.kurt()
-
-# Pairplot of returns dataframe 
-
-sns.pairplot(returns);
-
-# Boxplots showing distribution of the returns data over the time period 
-
-sns.set_style("whitegrid")
-fig, axs = plt.subplots(ncols=6, nrows=1, figsize=(20, 10))
-index = 0
-axs = axs.flatten()
-for k,v in returns.items():
-    sns.boxplot(y=k, data=returns, ax=axs[index])
-    index += 1
-plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=5.0)
-
-
-# Distribution plots showing the data for returns for 2023 
-
-sns.set_style("white")
-
-tickers = ['AZN.L', 'GSK.L', 'ULVR.L', 'BP.L', 'SHEL.L', 'HSBA.L']
-fig, axs = plt.subplots(ncols=3, nrows=2, figsize=(20, 10))
-index = 0
-axs = axs.flatten()
-
-for ticker in tickers:
-    sns.histplot(returns.loc['2023-01-01':'2023-12-31'][ticker], color='green', bins=100, ax=axs[index], kde=True)
-    index += 1
-
-
-# Covariance matrix to show direction of relationship between stocks' returns
-
-returns.cov() 
-
-# Correlation matrix to show strength and direction of relationship between stocks' returns
-
-returns.corr()
-
-# The heatmap clearly shows the strength of correlation between pairs of company returns
-
-plt.figure(figsize=(10, 10))
-sns.heatmap(data = returns.corr(), vmax=.8, linewidths=0.5,  fmt='.2f',
-            square=True,annot=True,cmap='YlGnBu',linecolor="white")
-plt.show()
-
-
-# Download FTSE 100 historical stock data from Yahoo! Finance for 1984-2020
-
-ftse100_idx_to_2024 = yf.download("^FTSE", start=datetime.datetime(1984, 1, 1), 
-                                     end=datetime.datetime(2024, 1, 1))
-ftse100_idx_to_2024
-
-# Now let's visualize the data
-def ftse100_to_2024_plot():
-    ftse100_idx_to_2024['Close'].plot(grid = True)
+st.dataframe(ftse100_stocks.head(10))
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.subheader('The Honorable Guinea Pig')
+st.write('HSBC stock (HSBA.L) will be selected for plotting charts and testing various trading strategies for no specific reason other than personal preference.')
+
+sba =  ftse100_stocks['HSBA.L']
+                                     
+st.dataframe(hsba.head())
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.subheader('Visualising stock data')
+st.write('Japanese candlestick charts are tools used in a particular trading style called price action to predict market movement through pattern recognition of continuations, breakouts, and reversals. Unlike a line chart, all of the price information can be viewed in one figure showing the high, low, open, and close price of the day or chosen time frame. Price action traders observe patterns formed by green bullish candles where the stock is trending upwards over time, and red bearish candles where there is a downward trend.')
+ef pandas_candlestick_ohlc(dat, stick="day", otherseries=None, txt=""):
+    """
+    Japanese candlestick chart showing OHLC prices for a specified time period
+
+    :param dat: pandas DataFrame object with datetime64 index, and float columns "Open", "High", "Low", and "Close"
+    :param stick: A string or number indicating the period of time covered by a single candlestick. Valid string inputs include "day", "week", "month", and "year", ("day" default), and any numeric input indicates the number of trading days included in a period
+    :param otherseries: An iterable that will be coerced into a list, containing the columns of dat that hold other series to be plotted as lines
+    :param txt: Title text for the candlestick chart
+
+    :returns: a Japanese candlestick plot for stock data stored in dat, also plotting other series if passed.
+    """
     sns.set(rc={'figure.figsize':(20, 10)})
-    plt.axvspan('1987','1989',color='r',alpha=.5)
-    plt.axvspan('2008','2010',color='r',alpha=.5)
-    plt.axvspan('2020','2024',color='r',alpha=.5)
-    labs = mpatches.Patch(color='red',alpha=.5, label="Black Monday, 2008 Crash, Covid-19 fall and its aftermath")
-    plt.legend(handles=[labs], prop={"size":15},  bbox_to_anchor=(0.4, 0.1), loc='upper center', borderaxespad=0.)
-    plt.title('Close Price for FTSE 100 stocks', color = 'black', fontsize = 20)
-    plt.xlabel('Year', color = 'black', fontsize = 15)
-    plt.ylabel('Close Price (pence)', color = 'black', fontsize = 15)
-    plt.show();
+    sns.set_style("whitegrid")  # Apply seaborn whitegrid style to the plots 
 
-ftse100_to_2024_plot()
+    transdat = dat.loc[:, ["Open", "High", "Low", "Close"]].copy()
 
+    if type(stick) == str and stick in ["day", "week", "month", "year"]:
+        if stick != "day":
+            if stick == "week":
+                transdat['period'] = pd.to_datetime(transdat.index).map(lambda x: x.strftime('%Y-%U'))
+            elif stick == "month":
+                transdat['period'] = pd.to_datetime(transdat.index).map(lambda x: x.strftime('%Y-%m'))
+            elif stick == "year":
+                transdat['period'] = pd.to_datetime(transdat.index).map(lambda x: x.strftime('%Y'))
+            
+            grouped = transdat.groupby('period')
+            plotdat = pd.DataFrame([{
+                "Open": group.iloc[0]["Open"],
+                "High": max(group["High"]),
+                "Low": min(group["Low"]),
+                "Close": group.iloc[-1]["Close"]
+            } for _, group in grouped], index=pd.to_datetime([period for period, _ in grouped]))
+        else:
+            plotdat = transdat
+            plotdat['period'] = pd.to_datetime(plotdat.index)
+    elif type(stick) == int and stick >= 1:
+        transdat['period'] = np.floor(np.arange(len(transdat)) / stick)
+        grouped = transdat.groupby('period')
+        plotdat = pd.DataFrame([{
+            "Open": group.iloc[0]["Open"],
+            "High": max(group["High"]),
+            "Low": min(group["Low"]),
+            "Close": group.iloc[-1]["Close"]
+        } for _, group in grouped], index=[group.index[0] for _, group in grouped])
+    else:
+        raise ValueError('Valid inputs to argument "stick" include the strings "day", "week", "month", "year", or a positive integer')
 
+    plotdat['date_num'] = date2num(plotdat.index.to_pydatetime())
+
+    fig, ax = plt.subplots()
+    ax.xaxis_date()
+    ax.autoscale_view()
+    plt.setp(plt.gca().get_xticklabels(), rotation=45, horizontalalignment='right')
+    sns.set(rc={'figure.figsize':(20, 10)})
+    candlestick_ohlc(ax, plotdat[['date_num', 'Open', 'High', 'Low', 'Close']].values, width=0.6/(24*60), colorup='g', colordown='r')
+
+    if otherseries is not None:
+        if type(otherseries) != list:
+            otherseries = [otherseries]
+        for series in otherseries:
+            dat[series].plot(ax=ax, lw=1.3)
+
+    plt.title(f"Candlestick chart of HSBA.L OHLC stock prices from 01 Jan 2014 - 31 Dec 2023", color = 'black', fontsize = 20)
+    plt.xlabel('Date', color = 'black', fontsize = 15)
+    plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15)
+    candlestick_ohlc(ax, plotdat[['date_num', 'Open', 'High', 'Low', 'Close']].values, width=20, colorup='g', colordown='r')
+
+    plt.show()
+
+st.pyplot(pandas_candlestick_ohlc(hsba, stick="month"))
