@@ -53,6 +53,6 @@ These four jupyter books should be considered as a pipeline/framework. Please do
 The `.py` files going along them are Streamlit deployments of the said jupyter projects.
 
 
-PS: This project has been undertaken as an attempt to bring to order a total zoo of ideas and concepts gained from self-education on the intricacies of the stock-market, so an overwhelming amount of comments in the code and web-version is begging to be excused. 
+PS: This project has been undertaken as an attempt to bring to order a total zoo of ideas and concepts gained from self-education on the intricacies of the stock-market, so an overwhelming amount of comments in the code and web-version is begging to be excused:) 
 
 PPS: Acknowledgments: to the one and only Alison Mitchell for her work and explanations.
