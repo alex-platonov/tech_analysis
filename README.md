@@ -50,4 +50,4 @@ An exercise in building a comprehensive trading dashboard. For the said exercise
 ## Adapting the pipeline
 These four jupyter books should be considered as a pipeline/framework. Please download them, test and adapt to your specific needs. Various stocks or time periods can be taken and explored. 
 
-The.py files going along them are Streamlit deployments of the said jupyter projects. 
+The `.py` files going along them are Streamlit deployments of the said jupyter projects. 
