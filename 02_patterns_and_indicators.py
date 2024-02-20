@@ -205,7 +205,7 @@ st.pyplot(sma2())
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 
-st.subheader('Trading Strategy')
+st.subheader('Trading Strategy - Moving Average Crossover')
 st.write('The moving average crossover trading strategy will be to take two moving averages - 20-day (fast) and 200-day (slow) - and to go long (buy) when the fast MA goes above the slow MA and to go short (sell) when the fast MA goes below the slow MA.')
 
 hsba_sma = hsba.copy()
@@ -226,3 +226,31 @@ txt = "20, 50 and 200 day moving averages for HSBA.L stock"
 
 st.write('Slice rows to plot data from 2019-2023')
 st.pyplot(pandas_candlestick_ohlc(hsba_sma.loc['2019-01-01':'2023-12-31',:], otherseries = ["20d", "50d", "200d"]))
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader('Backtesting')
+st.write('Before using the strategy we will evaluate its efficiency first by backtesting, or looking at how profitable it is on historical data.')
+st.write('First let us identify when the 20-day average is below the 200-day average, and vice versa.')
+
+hsba_sma['20d-200d'] = hsba_sma['20d'] - hsba_sma['200d']
+st.dataframe(hsba_sma.tail())
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.write('The sign of this difference is the regime; that is, if the fast moving average is above the slow-moving average, this is a bullish regime, and a bearish regime holds when the fast-moving average is below the slow-moving average')
+
+st.write('np.where() is a vectorized if-else function, where a condition is checked for each component of a vector, and the first argument passed is used when the condition holds, and the other passed if it does not')
+st.write('We shall assume 1s for bullish regimes and 0s for everything else. Replace the values of the bearish regime with -1, and to maintain the rest of the vector, the second argument is hsba_sma["Regime"]')
+hsba_sma["Regime"] = np.where(hsba_sma['20d-200d'] > 0, 1, 0)
+
+hsba_sma["Regime"] = np.where(hsba_sma['20d-200d'] < 0, -1, hsba_sma["Regime"])
+hsba_sma.loc['2019-01-01':'2023-12-31',"Regime"].plot(ylim = (-2,2)).axhline(y = 0, color = "black", lw = 2);
+plt.title("Regime for HSBA.L 20- and 200-day Moving Average Crossover Strategy for 2019-2023", color = 'black', fontsize = 20)
+plt.xlabel('Date', color = 'black', fontsize = 15)
+plt.ylabel('Regime', color = 'black', fontsize = 15);
+
+st.pyplot(plt)
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)
