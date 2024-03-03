@@ -238,8 +238,8 @@ st.dataframe(hsba_sma.tail())
 txt = "20, 50 and 200 day moving averages for HSBA.L stock"
 
 st.write('Slice rows to plot data from 2019-2023')
-pandas_candlestick_ohlc(hsba_sma.loc['2019-01-01':'2023-12-31',:], otherseries = ["20d", "50d", "200d"])
-st.pyplot(hsba_sma)
+st.pyplot(pandas_candlestick_ohlc(hsba_sma.loc['2019-01-01':'2023-12-31',:], otherseries = ["20d", "50d", "200d"]))
+
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('Backtesting')
