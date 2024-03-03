@@ -306,7 +306,7 @@ st.dataframe(hsba_sma.tail())
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True) 
 
-st.write('Let us plt the results')
+st.write('Let us plot the results')
 
 hsba_sma["Signal"].plot(ylim = (-2, 2));
 plt.title("Trading signals for HSBA.L 20- and 200-day Moving Average Crossover Strategy for 2014-2023", color = 'black', fontsize = 20)
@@ -375,7 +375,7 @@ st.dataframe(hsba_long_profits)
 st.markdown("<hr>", unsafe_allow_html=True) 
 
 st.subheader('Exponential Moving Average')
-st.write('In a Simple Moving Average, each value in the time period carries equal weight, and values outside of the time period are not included in the average. However, the Exponential Moving Average is a cumulative calculation where a different decreasing weight is assigned to each observation. Past values have a diminishing contribution to the average, while more recent values have a greater contribution. This method allows the moving average to be more responsive to changes in the data.')
+st.write('In a Simple Moving Average (SMA), each value in the time period carries equal weight, and values outside of the time period are not included in the average. However, the Exponential Moving Average (EMA) is a cumulative calculation where a different decreasing weight is assigned to each observation. Past values have a diminishing contribution to the average, while more recent values have a greater contribution. This method allows the moving average to be more responsive to changes in the data.')
 st.write('Let us establish a 20-day EMA for Adjusted Close price for year 2023')
 
 def ewma():
@@ -392,6 +392,161 @@ title_txt = "20-day Exponential Moving Average for HSBA.L stock"
 label_txt = "HSBA.L Adj Close"
 
 st.pyplot(ewma())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Let us establish 20-, 50- and 200-day EMA for Adjusted Close price for 2019-2023')
+
+def ewma2():
+  plt.figure(figsize=(15,9))
+  ftse100_stocks[ticker]['Adj Close'].loc['2019-01-01':'2023-12-31'].ewm(20).mean().plot(label='20 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2019-01-01':'2023-12-31'].ewm(50).mean().plot(label='50 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2019-01-01':'2023-12-31'].ewm(200).mean().plot(label='200 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2019-01-01':'2023-12-31'].plot(label=f"{label_txt}")
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
+ticker = 'HSBA.L'
+title_txt = "20, 50 and 200-day Exponential Moving Averages for HSBA.L stock"
+label_txt = "HSBA.L Adj Close"
+
+st.pyplot(ewma2())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.subheader('Triple Moving Average Crossover Strategy')
+st.write('This strategy uses three moving moving averages - short/fast, middle/medium and long/slow - and has two buy and sell signals.')
+
+st.write('The first is to buy when the middle/medium moving average crosses above the long/slow moving average and the short/fast moving average crosses above the middle/medium moving average. If we use this buy signal the strategy is to sell if the short/fast moving average crosses below the middle/medium moving average.')
+
+st.write('The second is to buy when the middle/medium moving average crosses below the long/slow moving average and the short/fast moving average crosses below the middle/medium moving average. If we use this buy signal the strategy is to sell if the short/fast moving average crosses above the middle/medium moving average.')
+
+
+st.dataframe(hsba[['Adj Close']]['2023-05-01':'2023-10-31'])
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+def adj_6mo():
+  sns.set(rc={'figure.figsize':(15, 9)})
+  ftse100_stocks[ticker]['Adj Close'].loc['2023-05-01':'2023-10-31'].plot(label=f"{label_txt}")
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
+ticker = 'HSBA.L'
+title_txt = "HSBA.L Adjusted Close Price from 1 May - 31 Oct 2023"
+label_txt = "HSBA.L Adj Close "
+
+st.pyplot(adj_6mo())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Let us calculate three ranges of EMA: long, middle and short).')
+hsba_adj_6mo = hsba[['Adj Close']]['2023-05-01':'2023-10-31']
+
+# Calculate Short-, middle- and long EMA
+ShortEMA = hsba_adj_6mo['Adj Close'].ewm(span=5, adjust=False).mean()
+MiddleEMA = hsba_adj_6mo['Adj Close'].ewm(span=21, adjust=False).mean()
+LongEMA = hsba_adj_6mo['Adj Close'].ewm(span=63, adjust=False).mean()
+
+def ewma3():
+  sns.set(rc={'figure.figsize':(15, 9)})
+  plt.plot(ftse100_stocks[ticker]['Adj Close'].loc['2023-05-01':'2023-10-31'], label=f"{label_txt}", color = 'blue')
+  plt.plot(ShortEMA, label = 'Short/Fast EMA', color = 'red')
+  plt.plot(MiddleEMA, label = 'Middle/Medium EMA', color = 'orange')
+  plt.plot(LongEMA, label = 'Long/Slow EMA', color = 'green')
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
+ticker = 'HSBA.L'
+title_txt = "Triple Exponential Moving Average Crossover for HSBA.L stock"
+label_txt = "HSBA.L Adj Close"
+
+st.pyplot(ewma3())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Now let us see how they look in data:')
+
+hsba_adj_6mo['Short'] = ShortEMA
+hsba_adj_6mo['Middle'] = MiddleEMA
+hsba_adj_6mo['Long'] = LongEMA
+
+st.write('Short EMA')
+st.dataframe(hsba_adj_6mo['Short'])
+
+st.write('Middle EMA')
+st.dataframe(hsba_adj_6mo['Middle'])
+
+st.write('Long EMA')
+st.dataframe(hsba_adj_6mo['Long'])
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Let us attempt to define BUY and SELL signals')
+
+def buy_sell_ewma3(data):
+  
+  buy_list = []
+  sell_list = []
+  flag_long = False
+  flag_short = False
+
+  for i in range(0, len(data)):
+    if data['Middle'][i] < data['Long'][i] and data['Short'][i] < data['Middle'][i] and flag_long == False and flag_short == False:
+      buy_list.append(data['Adj Close'][i])
+      sell_list.append(np.nan)
+      flag_short = True
+    elif flag_short == True and data['Short'][i] > data['Middle'][i]:
+      sell_list.append(data['Adj Close'][i])
+      buy_list.append(np.nan)
+      flag_short = False
+    elif data['Middle'][i] > data['Long'][i] and data['Short'][i] > data['Middle'][i] and flag_long == False and flag_short == False:
+      buy_list.append(data['Adj Close'][i])
+      sell_list.append(np.nan)
+      flag_long = True
+    elif flag_long == True and data['Short'][i] < data['Middle'][i]:
+      sell_list.append(data['Adj Close'][i])
+      buy_list.append(np.nan)
+      flag_long = False
+    else:
+      buy_list.append(np.nan)
+      sell_list.append(np.nan)
+  
+  return (buy_list, sell_list)
+
+hsba_adj_6mo['Buy'] = buy_sell_ewma3(hsba_adj_6mo)[0]
+hsba_adj_6mo['Sell'] = buy_sell_ewma3(hsba_adj_6mo)[1]
+
+def buy_sell_ewma3_plot():
+  sns.set(rc={'figure.figsize':(18, 10)})
+  plt.plot(ftse100_stocks[ticker]['Adj Close'].loc['2023-05-01':'2023-10-31'], label=f"{label_txt}", color = 'blue', alpha = 0.35)
+  plt.plot(ShortEMA, label = 'Short/Fast EMA', color = 'red', alpha = 0.35)
+  plt.plot(MiddleEMA, label = 'Middle/Medium EMA', color = 'orange', alpha = 0.35)
+  plt.plot(LongEMA, label = 'Long/Slow EMA', color = 'green', alpha = 0.35)
+  plt.scatter(hsba_adj_6mo.index, hsba_adj_6mo['Buy'], color = 'green', label = 'Buy Signal', marker = '^', alpha = 1)
+  plt.scatter(hsba_adj_6mo.index, hsba_adj_6mo['Sell'], color = 'red', label = 'Buy Signal', marker='v', alpha = 1)
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
+ticker = 'HSBA.L'
+title_txt = "Trading signals for HSBA.L stock"
+label_txt = "HSBA.L Adj Close"
+
+st.pyplot(buy_sell_ewma3_plot())
 
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True) 
