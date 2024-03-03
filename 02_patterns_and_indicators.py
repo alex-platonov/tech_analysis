@@ -219,7 +219,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('Trading Strategy - Moving Average Crossover')
 st.write('The moving average crossover trading strategy will be to take two moving averages - 20-day (fast) and 200-day (slow) - and to go long (buy) when the fast MA goes above the slow MA and to go short (sell) when the fast MA goes below the slow MA.')
 
-hsba_sma = hsba.copy()
+hsba_sma = ftse100_stocks['HSBA.L']
 st.dataframe(hsba.sma())
 
 #--------------------------------------------------------------------------------------------------------------------
