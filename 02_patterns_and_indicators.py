@@ -1138,7 +1138,8 @@ hsba_so['Strategy Returns'] = hsba_so['Market Returns'] * hsba_so['Position'].sh
 #Finally plot the strategy returns versus HSBA.L returns
 hsba_so[['Strategy Returns','Market Returns']].cumsum().plot(figsize=(20,10));
 
-st.pyplot(plt.title('Strategy returns versus HSBA.L returns', color = 'black', fontsize = 20);)
+plt.title('Strategy returns versus HSBA.L returns', color = 'black', fontsize = 20);
+st.pyplot(plt)
 
 st.write('So here we can see that the returns were somewhat positive but by a minuscule rate. The stock graph exhibits some violent volatility so, retrospectively the strategy of buying and holding would not  have had any significant returns, however, short-term speculative approach might have resulted in significant gains or losses.')
 
