@@ -222,7 +222,7 @@ st.write('The moving average crossover trading strategy will be to take two movi
 # Create copy of dataframe for HSBC data for 2014-2024
 
 hsba_sma = hsba.copy()
-st.dataframe(hsba_sma())
+st.dataframe(hsba_sma)
 
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
