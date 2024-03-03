@@ -1271,3 +1271,9 @@ for s in roc_ax.spines.values():
 # To better separate the two subplots, we reinstate a spine in between them
 roc_ax.spines['top'].set_visible(True)
 roc_ax.spines['top'].set_linewidth(1.5)
+
+st.pyplot(fig)
+
+st.write('Now let us plot some more graphs for the same period to get more insights from the data: a candlestick plot and a volume plot.')
+
+st.pyplot(mpf.plot(hsba_roc_100d, type='candle',  style='yahoo', figsize=(15,8),  title="HSBA.L Daily Price", volume=True))
