@@ -195,6 +195,17 @@ st.markdown("<hr>", unsafe_allow_html=True)
 
 st.write('For statistical accuracy, we should plot the same 20, 50 and 200 days MA for a company of the same sector, however, we happened to select HSBC - the only company from banking in the list of our honorable guinea pigs. So let us do a GlaxoSmithKline Adjusted Close price data for the same time period, just for the sake of it.') 
 
+def sma3():
+  plt.figure(figsize=(15,9))
+  ftse100_stocks[ticker]['Adj Close'].loc['2020-01-01':'2023-12-31'].rolling(window=20).mean().plot(label='20 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2020-01-01':'2023-12-31'].rolling(window=50).mean().plot(label='50 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2020-01-01':'2023-12-31'].rolling(window=200).mean().plot(label='200 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2020-01-01':'2023-12-31'].plot(label=f"{label_txt}")
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
 ticker = 'GSK.L'
 
 title_txt = "20, 50 and 200 day moving averages for GSK.L stock"
