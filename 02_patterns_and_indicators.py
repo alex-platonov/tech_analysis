@@ -1064,8 +1064,9 @@ st.write('Let us create a plot (with 2 subplots) showing the HSBA.L price over t
 fig, axes = plt.subplots(nrows=2, ncols=1,figsize=(20,10))
 fig.subplots_adjust(hspace=0.5)
 
-st.pyplot(hsba_so['Close'].plot(ax=axes[0]); axes[0].set_title('Close'))
-st.pyplot(hsba_so[['%K','%D']].plot(ax=axes[1]); axes[1].set_title('Oscillator');)
+hsba_so['Close'].plot(ax=axes[0]); axes[0].set_title('Close')
+hsba_so[['%K','%D']].plot(ax=axes[1]); axes[1].set_title('Oscillator');
+st.pyplot(fig)
 
 st.write('Before going fyther data needs to be manipulated in a certain way in order to accomodate for our further calculations.')
 st.markdown("""
