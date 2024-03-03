@@ -41,7 +41,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('The Honorable Guinea Pig')
 st.write('HSBC stock (HSBA.L) will be selected for plotting charts and testing various trading strategies for no specific reason other than personal preference.')
 
-hsba =  ftse100_stocks['HSBA.L']
+hsba = ftse100_stocks['HSBA.L']
                                      
 st.dataframe(hsba.head())
 #--------------------------------------------------------------------------------------------------------------------
@@ -219,8 +219,10 @@ st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('Trading Strategy - Moving Average Crossover')
 st.write('The moving average crossover trading strategy will be to take two moving averages - 20-day (fast) and 200-day (slow) - and to go long (buy) when the fast MA goes above the slow MA and to go short (sell) when the fast MA goes below the slow MA.')
 
-hsba_sma = ftse100_stocks['HSBA.L']
-st.dataframe(hsba.sma())
+# Create copy of dataframe for HSBC data for 2014-2024
+
+hsba_sma = hsba.copy()
+st.dataframe(hsba_sma())
 
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
