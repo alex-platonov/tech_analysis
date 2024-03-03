@@ -1047,16 +1047,16 @@ st.write('In this implementation there are 3 possible states – long, short, fl
 st.write('For correct calculations L14, H14, %K and %D columns need to be created and appended to the dataframe')
 
 #Create the "L14" column in the DataFrame
-st.dataframe(hsba_so['L14'] = hsba_so['Low'].rolling(window=14).min())
+hsba_so['L14'] = hsba_so['Low'].rolling(window=14).min()
 
 #Create the "H14" column in the DataFrame
-st.dataframe(hsba_so['H14'] = hsba_so['High'].rolling(window=14).max())
+hsba_so['H14'] = hsba_so['High'].rolling(window=14).max()
 
 #Create the "%K" column in the DataFrame
-st.dataframe(hsba_so['%K'] = 100*((hsba_so['Close'] - hsba_so['L14']) / (hsba_so['H14'] - hsba_so['L14']) ))
+hsba_so['%K'] = 100*((hsba_so['Close'] - hsba_so['L14']) / (hsba_so['H14'] - hsba_so['L14']))
 
 #Create the "%D" column in the DataFrame
-st.dataframe(hsba_so['%D'] = hsba_so['%K'].rolling(window=3).mean())
+hsba_so['%D'] = hsba_so['%K'].rolling(window=3).mean()
 
 
 st.write('Let us create a plot (with 2 subplots) showing the HSBA.L price over time, along with a visual representation of the Stochastic Oscillator.')
@@ -1201,4 +1201,73 @@ st.write('As before, the experiment starts with clean duplicating the existing d
 hsba_roc = hsba.copy()
 st.dataframe(hsba_roc)
 
+hsba_roc_12mo = hsba_roc['2023-01-01':'2023-12-31']
+hsba_roc_12mo['ROC'] = ( hsba_roc_12mo['Adj Close'] / hsba_roc_12mo['Adj Close'].shift(9) -1 ) * 100
 
+st.write('Let us take only last 100 days as a subset to experiment on.')
+
+hsba_roc_100d = hsba_roc_12mo[-100:]
+dates = hsba_roc_100d.index
+price = hsba_roc_100d['Adj Close']
+roc = hsba_roc_100d['ROC']
+st.dataframe(hsba_roc_12mo[-100:])
+
+st.write('Now let us plot HSBA.L Adj Close Price and 9-day ROC for last 100 days of 2023.')
+
+fig = plt.figure(figsize=(16,10))
+fig.subplots_adjust(hspace=0)
+
+plt.rcParams.update({'font.size': 14})
+
+# Price subplot
+price_ax = plt.subplot(2, 1, 1)
+price_ax.plot(dates, price, color='blue', linewidth=2, label="Adj Closing Price")
+price_ax.legend(loc="upper left", fontsize=12)
+price_ax.set_ylabel("Price")
+price_ax.set_title("HSBA.L Daily Price", fontsize=24)
+
+# ROC subplot
+roc_ax = plt.subplot(2, 1, 2, sharex = price_ax)
+roc_ax.plot(roc, color='k', linewidth = 1, alpha=0.7, label="9-Day ROC")
+roc_ax.legend(loc="upper left", fontsize=12)
+roc_ax.set_ylabel("% ROC")
+
+# Adding a horizontal line at the zero level in the ROC subplot:
+roc_ax.axhline(0, color = (.5, .5, .5), linestyle = '--', alpha = 0.5)
+
+# Filling the areas between the indicator and the level 0 line:
+roc_ax.fill_between(dates, 0, roc, where = (roc >= 0), color='g', alpha=0.3, interpolate=True)
+roc_ax.fill_between(dates, 0, roc, where = (roc  < 0), color='r', alpha=0.3, interpolate=True)
+
+# Formatting the date labels
+roc_ax.xaxis.set_major_formatter(DateFormatter('%b'))
+
+# Formatting the labels on the y axis for ROC:
+roc_ax.yaxis.set_major_formatter(mpl.ticker.PercentFormatter())
+
+# Adding a grid to both subplots:
+price_ax.grid(color='grey', linestyle='-', alpha=0.5)
+roc_ax.grid(color='grey', linestyle='-', alpha=0.5)
+
+# Setting a background color for the both subplots:
+price_ax.set_facecolor((.94,.95,.98))
+roc_ax.set_facecolor((.98,.97,.93))
+
+# Adding margins around the plots:
+price_ax.margins(0.05, 0.2)
+roc_ax.margins(0.05, 0.2)
+
+# Hiding the tick marks from the horizontal and vertical axis:
+price_ax.tick_params(left=False, bottom=False)
+roc_ax.tick_params(left=False, bottom=False, labelrotation=45)
+
+# Hiding all the spines for the price subplot:
+for s in price_ax.spines.values():
+    s.set_visible(False)
+# Hiding all the spines for the ROC subplot:
+for s in roc_ax.spines.values():
+    s.set_visible(False)
+
+# To better separate the two subplots, we reinstate a spine in between them
+roc_ax.spines['top'].set_visible(True)
+roc_ax.spines['top'].set_linewidth(1.5)
