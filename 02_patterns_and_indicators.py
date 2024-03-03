@@ -1122,9 +1122,10 @@ hsba_so['Long'] = hsba_so['Long'].fillna(method='pad')
 hsba_so['Position'] = hsba_so['Long'] + hsba_so['Short']
 
 st.write('This data manipulation has been done under the covers, however if you wish to see the raw process, please go to https://github.com/alex-platonov/tech_analysis/blob/main/02_patterns_and_indicators.ipynb and see for yourself')
-st.write('Now we can plot the position through time to get an idea of when we are long and when we are short:)
+st.write('Now we can plot the position through time to get an idea of when we are long and when we are short:')
 
-st.pyplot(hsba_so['Position'].plot(figsize=(20,10));)
+hsba_so['Position'].plot(figsize=(20,10));
+st.pyplot(hsba_so)
 
 st.write('Now let us attempt to plot the strategy returns versus the underlying HSBA stock returns over a period of time.')
 #Set up a column holding the daily HSBA.L returns
