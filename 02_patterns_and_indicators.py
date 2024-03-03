@@ -616,7 +616,7 @@ title_txt = "Double Exponential Smoothing for HSBA.L stock with different alpha 
 label_txt = "HSBA.L Adj Close"
 
 st.pyplot(plot_double_exponential_smoothing(ftse100_stocks[ticker]['Adj Close'].loc['2019-01-01':'2023-12-31'], alphas=[0.9, 0.02],)
-st.write('The third main type is Triple Exponential Smoothing aka Holt Winters Method which is an extension of Exponential Smoothing that explicitly adds support for seasonality or periodic fluctuations. Since we are analyzing a bank sector stock we shall omit the triple smoothing as seasonality and any periodic fluctuations do not have a drastic effect on the whole picture.')
+#st.write('The third main type is Triple Exponential Smoothing aka Holt Winters Method which is an extension of Exponential Smoothing that explicitly adds support for seasonality or periodic fluctuations. Since we are analyzing a bank sector stock we shall omit the triple smoothing as seasonality and any periodic fluctuations do not have a drastic effect on the whole picture.')
 
  
 #--------------------------------------------------------------------------------------------------------------------
@@ -1027,7 +1027,7 @@ st.write('The stochastic oscillator is plotted within a range of zero and 100. T
 hsba_so = hsba.copy()
 
 st.markdown("""
-# Stochastic Oscillator Formula
+Stochastic Oscillator Formula
 
 The stochastic oscillator is calculated using the following formula:
 
@@ -1067,4 +1067,139 @@ fig.subplots_adjust(hspace=0.5)
 
 st.pyplot(hsba_so['Close'].plot(ax=axes[0]); axes[0].set_title('Close'))
 st.pyplot(hsba_so[['%K','%D']].plot(ax=axes[1]); axes[1].set_title('Oscillator');)
+
+st.write('Before going fyther data needs to be manipulated in a certain way in order to accomodate for our further calculations.')
+st.markdown("""
+The following manipulations are to be performed: 
+- Create a column in the DataFrame showing "TRUE" if sell entry signal is given and "FALSE" otherwise. A sell is initiated when the %K line crosses down through the %D line and the value of the oscillator is above 80;
+- Create a column in the DataFrame showing "TRUE" if sell exit signal is given and "FALSE" otherwise. A sell exit signal is given when the %K line crosses back up through the %D line;
+- Create a placeholder column to populate with short positions (-1 for short and 0 for flat) using boolean values created above;
+- Set initial position on day 1 to flat;
+- Forward fill the position column to represent the holding of positions through time;
+- Create a column in the DataFrame showing "TRUE" if buy entry signal is given and "FALSE" otherwise. A buy is initiated when the %K line crosses up through the %D line and the value of the oscillator is below 20;
+- Create a column in the DataFrame showing "TRUE" if buy exit signal is given and "FALSE" otherwise. A buy exit signal is given when the %K line crosses back down through the %D line;
+- Create a placeholder column to populate with long positions (1 for long and 0 for flat) using boolean values created above;
+- Set initial position on day 1 to flat;
+- Forward fill the position column to represent the holding of positions through time;
+- Add Long and Short positions together to get final strategy position (1 for long, -1 for short and 0 for flat);
+""", unsafe_allow_html=True)
+#First, let us create a column in the DataFrame showing "TRUE" if sell entry signal is given and "FALSE" otherwise. A sell is initiated when the %K line crosses down through the %D line and the value of the oscillator is above 80:
+hsba_so['Sell Entry'] = ((hsba_so['%K'] < hsba_so['%D']) & (hsba_so['%K'].shift(1) > hsba_so['%D'].shift(1))) & (hsba_so['%D'] > 80)
+#Second, let us create a column in the DataFrame showing "TRUE" if sell exit signal is given and "FALSE" otherwise. A sell exit signal is given when the %K line crosses back up through the %D line: 
+hsba_so['Sell Exit'] = ((hsba_so['%K'] > hsba_so['%D']) & (hsba_so['%K'].shift(1) < hsba_so['%D'].shift(1)))
+
+#Third, let us create a placeholder column to populate with short positions (-1 for short and 0 for flat) using boolean values created above:
+hsba_so['Short'] = np.nan 
+hsba_so.loc[hsba_so['Sell Entry'],'Short'] = -1 
+hsba_so.loc[hsba_so['Sell Exit'],'Short'] = 0 
+
+#Set initial position on day 1 to flat 
+hsba_so['Short'][0] = 0 
+
+#Forward fill the position column to represent the holding of positions through time 
+hsba_so['Short'] = hsba_so['Short'].fillna(method='pad') 
+
+#Create a column in the DataFrame showing "TRUE" if buy entry signal is given and "FALSE" otherwise. 
+#A buy is initiated when the %K line crosses up through the %D line and the value of the oscillator is below 20 
+hsba_so['Buy Entry'] = ((hsba_so['%K'] > hsba_so['%D']) & (hsba_so['%K'].shift(1) < hsba_so['%D'].shift(1))) & (hsba_so['%D'] < 20) 
+
+#Create a column in the DataFrame showing "TRUE" if buy exit signal is given and "FALSE" otherwise. 
+#A buy exit signal is given when the %K line crosses back down through the %D line 
+hsba_so['Buy Exit'] = ((hsba_so['%K'] < hsba_so['%D']) & (hsba_so['%K'].shift(1) > hsba_so['%D'].shift(1))) 
+
+#create a placeholder column to populate with long positions (1 for long and 0 for flat) using boolean values created above 
+hsba_so['Long'] = np.nan  
+hsba_so.loc[hsba_so['Buy Entry'],'Long'] = 1  
+hsba_so.loc[hsba_so['Buy Exit'],'Long'] = 0  
+
+#Set initial position on day 1 to flat 
+hsba_so['Long'][0] = 0  
+
+#Forward fill the position column to represent the holding of positions through time 
+hsba_so['Long'] = hsba_so['Long'].fillna(method='pad') 
+
+#Add Long and Short positions together to get final strategy position (1 for long, -1 for short and 0 for flat) 
+hsba_so['Position'] = hsba_so['Long'] + hsba_so['Short']
+
+st.write('This data manipulation has been done under the covers, however if you wish to see the raw process, please go to https://github.com/alex-platonov/tech_analysis/blob/main/02_patterns_and_indicators.ipynb and see for yourself')
+st.write('Now we can plot the position through time to get an idea of when we are long and when we are short:)
+
+st.pyplot(hsba_so['Position'].plot(figsize=(20,10));)
+
+st.write('Now let us attempt to plot the strategy returns versus the underlying HSBA stock returns over a period of time.')
+#Set up a column holding the daily HSBA.L returns
+hsba_so['Market Returns'] = hsba_so['Close'].pct_change()
+
+#Create column for Strategy Returns by multiplying the daily HSAB.L returns by the position that was held at close
+#of business the previous day
+hsba_so['Strategy Returns'] = hsba_so['Market Returns'] * hsba_so['Position'].shift(1)
+
+#Finally plot the strategy returns versus HSBA.L returns
+hsba_so[['Strategy Returns','Market Returns']].cumsum().plot(figsize=(20,10));
+
+st.pyplot(plt.title('Strategy returns versus HSBA.L returns', color = 'black', fontsize = 20);)
+
+st.write('So here we can see that the returns were somewhat positive but by a minuscule rate. The stock graph exhibits some violent volatility so, retrospectively the strategy of buying and holding would not  have had any significant returns, however, short-term speculative approach might have resulted in significant gains or losses.')
+
+st.write('It is worth mentioning that this strategy has a second implementation – the one where we are either holding long or short positions.')
+
+hsba_so['L14'] = hsba_so['Low'].rolling(window=14).min()
+hsba_so['H14'] = hsba_so['High'].rolling(window=14).max()
+
+hsba_so['%K'] = 100*((hsba_so['Close'] - hsba_so['L14']) / (hsba_so['H14'] - hsba_so['L14']) )
+hsba_so['%D'] = hsba_so['%K'].rolling(window=3).mean()
+
+hsba_so['Sell Entry'] = ((hsba_so['%K'] < hsba_so['%D']) & (hsba_so['%K'].shift(1) > hsba_so['%D'].shift(1))) & (hsba_so['%D'] > 80)
+hsba_so['Buy Entry'] = ((hsba_so['%K'] > hsba_so['%D']) & (hsba_so['%K'].shift(1) < hsba_so['%D'].shift(1))) & (hsba_so['%D'] < 20)
+
+st.markdown(""" Some data manipulation is essential for further calculations: 
+- An empty column 'Position needs to be created in the dataframe;
+- Set position to -1 for sell signals;
+- Set position to -1 for buy signals;
+- Set starting position to flat (i.e. 0);
+- Forward fill the position column to show holding of positions through time; 
+- Set up a column holding the daily HSBA.L returns; 
+- Create column for Strategy Returns by multiplying the daily HSBA.L returns by the position that was held at the close of business the previous day;
+
+""", unsafe_allow_html=True)
+
+#Create empty "Position" column
+hsba_so['Position'] = np.nan 
+
+#
+hsba_so.loc[hsba_so['Sell Entry'],'Position'] = -1 
+
+#Set position to -1 for buy signals
+hsba_so.loc[hsba_so['Buy Entry'],'Position'] = 1 
+
+#Set starting position to flat (i.e. 0)
+hsba_so['Position'].iloc[0] = 0 
+
+#Forward fill the position column to show holding of positions through time
+hsba_so['Position'] = hsba_so['Position'].fillna(method='ffill')
+
+#Set up a column holding the daily HSBA.L returns
+hsba_so['Market Returns'] = hsba_so['Close'].pct_change()
+
+#Create column for Strategy Returns by multiplying the daily HSBA.L returns by the position that was held at close
+#of business the previous day
+hsba_so['Strategy Returns'] = hsba_so['Market Returns'] * hsba_so['Position'].shift(1)
+
+st.write('Finally we can plot the strategy returns versus HSBA.L returns')
+hsba_so[['Strategy Returns','Market Returns']].cumsum().plot(figsize=(20,10));
+
+plt.title('Strategy returns versus HSBA.L returns (long or short)', color = 'black', fontsize = 20);
+
+st.write('This strategy implementation demonstrates better outcomes.')
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)   
+
+st.subheader('Rate of Change (ROC)')
+st.write('The ROC indicator is a pure momentum oscillator. The ROC calculation compares the current price with the price "n" periods ago e.g. when we compute the ROC of the daily price with a 9-day lag, we are simply looking at how much, in percentage, the price has gone up (or down) compared to 9 days ago. Like other momentum indicators, ROC has overbought and oversold zones that may be adjusted according to market conditions.')
+
+st.write('As before, the experiment starts with clean duplicating the existing dataframe:')
+hsba_roc = hsba.copy()
+st.dataframe(hsba_roc)
+
 
