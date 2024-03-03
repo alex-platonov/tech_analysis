@@ -672,7 +672,7 @@ st.pyplot(macd())
 
 st.write('When the MACD line crosses above the signal line this indicates a good time to buy.')
 
-st.write('Now let us try to display the signals fr BUY and SELL')
+st.write('Now let us try to display the signals for BUY and SELL')
 
 # Function to signal when to buy and sell
 
