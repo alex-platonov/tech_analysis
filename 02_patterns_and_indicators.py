@@ -1047,7 +1047,7 @@ st.write('In this implementation there are 3 possible states – long, short, fl
 st.write('For correct calculations L14, H14, %K and %D columns need to be created and appended to the dataframe')
 
 #Create the "L14" column in the DataFrame
-st.ataframe(hsba_so['L14'] = hsba_so['Low'].rolling(window=14).min())
+st.dataframe(hsba_so['L14'] = hsba_so['Low'].rolling(window=14).min())
 
 #Create the "H14" column in the DataFrame
 st.dataframe(hsba_so['H14'] = hsba_so['High'].rolling(window=14).max())
