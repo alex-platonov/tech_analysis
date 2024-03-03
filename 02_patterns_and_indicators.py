@@ -219,7 +219,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader('Trading Strategy - Moving Average Crossover')
 st.write('The moving average crossover trading strategy will be to take two moving averages - 20-day (fast) and 200-day (slow) - and to go long (buy) when the fast MA goes above the slow MA and to go short (sell) when the fast MA goes below the slow MA.')
 
-# Create copy of dataframe for HSBC data for 2014-2024
+st.write('Create copy of dataframe for HSBC data for 2014-2024 to work with further')
 
 hsba_sma = hsba.copy()
 st.dataframe(hsba_sma)
@@ -267,3 +267,131 @@ st.pyplot(plt)
 
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)
+
+st.write('Now le us plot the same but for a longer period: from 2014 to the end of 2023')
+
+hsba_sma["Regime"].plot(ylim = (-2,2)).axhline(y = 0, color = "black", lw = 2);
+plt.title("Regime for HSBA.L 20- and 200-day Moving Average Crossover Strategy for 2014-2023", color = 'black', fontsize = 20)
+plt.xlabel('Date', color = 'black', fontsize = 15)
+plt.ylabel('Regime', color = 'black', fontsize = 15);
+
+st.pyplot(plt)
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Now let us calculate the number of bullish and bearish days for the period of 2019-2023')
+
+st.dataframe(hsba_sma["Regime"].value_counts())
+
+st.write('So as we can see the market was bullish for 1715 days and for 604 days it was bearish. It was also neutral for 199 days for the time-period 2019-2023')
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('So he is the dataframe with added Regime values')
+
+st.dataframe(hsba_sma)
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Now let us attempt to obtain signals with -1 indicating “sell”, 1 indicating “buy”, and 0 no action based on the regime values in the dataframe. To ensure that all trades close out, temporarily change the regime of the last row to 0')
+regime_orig = hsba_sma.iloc[-1, 10]
+hsba_sma.iloc[-1, 10] = 0
+hsba_sma["Signal"] = np.sign(hsba_sma["Regime"] - hsba_sma["Regime"].shift(1))
+# Restore original regime data
+hsba_sma.iloc[-1, 10] = regime_orig
+hsba_sma.tail()
+st.dataframe(hsba_sma.tail())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Let us plt the results')
+
+hsba_sma["Signal"].plot(ylim = (-2, 2));
+plt.title("Trading signals for HSBA.L 20- and 200-day Moving Average Crossover Strategy for 2014-2023", color = 'black', fontsize = 20)
+plt.xlabel('Date', color = 'black', fontsize = 15)
+plt.ylabel('Trading signal', color = 'black', fontsize = 15);
+
+st.pyplot(plt)
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Now let us disply unique counts of trading signals')
+
+st.dataframe(hsba_sma["Signal"].value_counts())
+
+st.write('Essentially the means that e would buy HSBC stock 9 times and sell 9 times. If we only go long 9 trades will be engaged in over the 10-year period, while if we pivot from a long to a short position every time a long position is terminated, we would engage in 14 trades total. It is worth bearing in mind that trading more frequently isn’t necessarily good as trades are never free and broker commissions are to be paid.')
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Now let us try and dentify what was the price of the stock at every buy.')
+
+st.dataframe(hsba_sma.loc[hsba_sma["Signal"] == 1, "Close"])
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Now let us do the same for the price of the stock at every sell.')
+
+st.dataframe(hsba_sma.loc[hsba_sma["Signal"] == -1, "Close"])
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Let us create a dataframe with trades, including the price at the trade and the regime under which the trade is made.')
+
+hsba_signals = pd.concat([
+        pd.DataFrame({"Price": hsba_sma.loc[hsba_sma["Signal"] == 1, "Adj Close"],
+                     "Regime": hsba_sma.loc[hsba_sma["Signal"] == 1, "Regime"],
+                     "Signal": "Buy"}),
+        pd.DataFrame({"Price": hsba_sma.loc[hsba_sma["Signal"] == -1, "Adj Close"],
+                     "Regime": hsba_sma.loc[hsba_sma["Signal"] == -1, "Regime"],
+                     "Signal": "Sell"}),
+    ])
+hsba_signals.sort_index(inplace = True)
+st.dataframe(hsba_signals)
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.write('Let us see if long trades had been profitable')
+
+hsba_long_profits = pd.DataFrame({
+        "Price": hsba_signals.loc[(hsba_signals["Signal"] == "Buy") &
+                                  hsba_signals["Regime"] == 1, "Price"],
+        "Profit": pd.Series(hsba_signals["Price"] - hsba_signals["Price"].shift(1)).loc[
+            hsba_signals.loc[(hsba_signals["Signal"].shift(1) == "Buy") & (hsba_signals["Regime"].shift(1) == 1)].index
+        ].tolist(),
+        "End Date": hsba_signals["Price"].loc[
+            hsba_signals.loc[(hsba_signals["Signal"].shift(1) == "Buy") & (hsba_signals["Regime"].shift(1) == 1)].index
+        ].index
+    })
+st.dataframe(hsba_long_profits)
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.subheader('Exponential Moving Average')
+st.write('In a Simple Moving Average, each value in the time period carries equal weight, and values outside of the time period are not included in the average. However, the Exponential Moving Average is a cumulative calculation where a different decreasing weight is assigned to each observation. Past values have a diminishing contribution to the average, while more recent values have a greater contribution. This method allows the moving average to be more responsive to changes in the data.')
+st.write('Let us establish a 20-day EMA for Adjusted Close price for year 2023')
+
+def ewma():
+  plt.figure(figsize=(15,9))
+  ftse100_stocks[ticker]['Adj Close'].loc['2023-01-01':'2023-12-31'].ewm(20).mean().plot(label='20 Day Avg')
+  ftse100_stocks[ticker]['Adj Close'].loc['2023-01-01':'2023-12-31'].plot(label=f"{label_txt}")
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
+ticker = 'HSBA.L'
+title_txt = "20-day Exponential Moving Average for HSBA.L stock"
+label_txt = "HSBA.L Adj Close"
+
+st.pyplot(ewma())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
