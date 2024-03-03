@@ -1296,7 +1296,7 @@ st.pyplot(mpf)
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)   
 
-st.header('Volatility trading strategies)
+st.header('Volatility trading strategies')
 st.write('Volatility trading involves predicting the stability of an asset’s value. Instead of trading on the price rising or falling, traders take a position on whether it will move in any direction.')
 
 st.subheader('Bollinger Bands')
