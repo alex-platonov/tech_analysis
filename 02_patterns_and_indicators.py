@@ -550,3 +550,522 @@ st.pyplot(buy_sell_ewma3_plot())
 
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True) 
+
+st.subheader('Exponential Smoothing')
+st.write('Single Exponential Smoothing, also known as Simple Exponential Smoothing, is a time series forecasting method for univariate data without a trend or seasonality. It requires an alpha parameter, also called the smoothing factor or smoothing coefficient, to control the rate at which the influence of the observations at prior time steps decay exponentially.')
+
+def exponential_smoothing(series, alpha):
+    result = [series[0]] # first value is same as series
+    for n in range(1, len(series)):
+        result.append(alpha * series[n] + (1 - alpha) * result[n-1])
+    return result
+
+def plot_exponential_smoothing(series, alphas):
+    plt.figure(figsize=(17, 8))
+    for alpha in alphas:
+        plt.plot(exponential_smoothing(series, alpha), label=f"Alpha {alpha}")
+    plt.plot(series.values, "c", label = f"{label_txt}")
+    plt.xlabel('Days', color = 'black', fontsize = 15)
+    plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+    plt.legend(loc="best")
+    plt.axis('tight')
+    plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+    plt.grid(True);
+
+ticker = 'HSBA.L'
+title_txt = "Single Exponential Smoothing for HSBA.L stock using 0.05 and 0.3 as alpha values"
+label_txt = "HSBA.L Adj Close"
+
+st.pyplot(plot_exponential_smoothing(ftse100_stocks[ticker]['Adj Close'].loc['2019-01-01':'2023-12-31'], [0.05, 0.3]))
+
+st.write('The smaller the smoothing factor (coefficient), the smoother the time series will be. As the smoothing factor approaches 0, we approach the moving average model so the smoothing factor of 0.05 produces a smoother time series than 0.3. This indicates slow learning (past observations have a large influence on forecasts). A value close to 1 indicates fast learning (that is, only the most recent values influence the forecasts). Double Exponential Smoothing (Holt’s Linear Trend Model) is an extension being a recursive use of Exponential Smoothing twice where beta is the trend smoothing factor, and takes values between 0 and 1. It explicitly adds support for trends.')
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True) 
+
+
+def double_exponential_smoothing(series, alpha, beta):
+    result = [series[0]]
+    for n in range(1, len(series)+1):
+        if n == 1:
+            level, trend = series[0], series[1] - series[0]
+        if n >= len(series): # forecasting
+            value = result[-1]
+        else:
+            value = series[n]
+        last_level, level = level, alpha * value + (1 - alpha) * (level + trend)
+        trend = beta * (level - last_level) + (1 - beta) * trend
+        result.append(level + trend)
+    return result
+
+def plot_double_exponential_smoothing(series, alphas, betas):
+    plt.figure(figsize=(17, 8))
+    for alpha in alphas:
+        for beta in betas:
+            plt.plot(double_exponential_smoothing(series, alpha, beta), label=f"Alpha {alpha}, beta {beta}")
+    plt.plot(series.values, label = f"{label_txt}")
+    plt.xlabel('Days', color = 'black', fontsize = 15)
+    plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15)
+    plt.legend(loc="best")
+    plt.axis('tight')
+    plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+    plt.grid(True)
+
+ticker = 'HSBA.L'
+title_txt = "Double Exponential Smoothing for HSBA.L stock with different alpha and beta values"
+label_txt = "HSBA.L Adj Close"
+
+st.pyplot(plot_double_exponential_smoothing(ftse100_stocks[ticker]['Adj Close'].loc['2019-01-01':'2023-12-31'], alphas=[0.9, 0.02],)
+          
+st.write('The third main type is Triple Exponential Smoothing (Holt Winters Method) which is an extension of Exponential Smoothing that explicitly adds support for seasonality or periodic fluctuations. Since we are analyzing a bank sector stock we shall omit the triple smoothing as seasonality and any periodic fluctuations do not have a drastic effect on the whole picture.')
+
+ 
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)          
+
+st.subheader('Moving average convergence divergence (MACD)')
+st.write('The MACD is a trend-following momentum indicator turning two trend-following indicators, moving averages, into a momentum oscillator by subtracting the longer moving average from the shorter one.')
+
+st.write('It is useful although lacking one prediction element - because it is unbounded it is not particularly useful for identifying overbought and oversold levels. Traders can look for signal line crossovers, neutral/centreline crossovers (otherwise known as the 50 level) and divergences from the price action to generate signals.')
+
+st.write('The default parameters are 26 EMA of prices, 12 EMA of prices and a 9-moving average of the difference between the first two.')
+
+def adj_3mo():
+  sns.set(rc={'figure.figsize':(15, 9)})
+  ftse100_stocks[ticker]['Adj Close'].loc['2023-08-01':'2023-10-31'].plot(label=f"{label_txt}")
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
+ticker = 'HSBA.L'
+title_txt = "HSBA.L Adjusted Close Price from 1 Aug - 31 Oct 2023"
+label_txt = "HSBA.L Adj Close "
+
+st.write('Let us plot HSBC Adjusted close prices for 3 months in 2023 just for reference purposes')
+st.pyplot(adj_3mo())
+
+hsba_adj_3mo = hsba[['Adj Close']]['2023-08-01':'2023-10-31']
+
+st.write('In order to correctly calculate the MACD we should take the following values: Short EMA (as defined before), Long EMA (as defined before), their difference, and the resulting signal.')
+
+ShortEMA = hsba_adj_3mo['Adj Close'].ewm(span=12, adjust=False).mean()
+LongEMA = hsba_adj_3mo['Adj Close'].ewm(span=26, adjust=False).mean()
+MACD = ShortEMA - LongEMA
+signal = MACD.ewm(span=9, adjust=False).mean()
+
+def macd():
+  plt.figure(figsize=(15, 9))
+  plt.plot(hsba_adj_3mo.index, MACD, label = f"{macd_label_txt}", color= 'red')
+  plt.plot(hsba_adj_3mo.index, signal, label = f"{sig_label_txt}", color= 'blue')
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xticks (rotation = 45)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.legend(loc='upper left')
+  plt.show()
+
+ticker = 'HSBA.L'
+title_txt = 'MACD and Signal line for HSBA.L stock from 1 Aug - 31 Oct 2023'
+macd_label_txt ="HSBA.L MACD"
+sig_label_txt = "Signal Line"
+
+st.pyplot(macd())
+
+st.write('When the MACD line crosses above the signal line this indicates a good time to buy.')
+
+st.write('Now let us try to display the signals fr BUY and SELL')
+
+# Function to signal when to buy and sell
+
+def buy_sell_macd(signal):
+  Buy = []
+  Sell = []
+  flag = -1
+
+  for i in range(0, len(signal)):
+    if signal['MACD'][i] > signal['Signal Line'][i]:
+      Sell.append(np.nan)
+      if flag != 1:
+        Buy.append(signal['Adj Close'][i])
+        flag = 1
+      else:
+        Buy.append(np.nan)
+    elif signal['MACD'][i] < signal['Signal Line'][i]:
+      Buy.append(np.nan)
+      if flag != 0:
+        Sell.append(signal['Adj Close'][i])
+        flag = 0
+      else:
+        Sell.append(np.nan)
+    else:
+      Buy.append(np.nan)
+      Sell.append(np.nan)
+
+  return (Buy, Sell)
+
+# Create buy and sell columns
+
+a = buy_sell_macd(hsba_adj_3mo)
+hsba_adj_3mo['Buy_Signal_Price'] = a[0]
+hsba_adj_3mo['Sell_Signal_Price'] = a[1]
+
+# Plot buy and sell signals
+
+def buy_sell_macd_plot():
+  plt.figure(figsize=(20, 10))
+  plt.scatter(hsba_adj_3mo.index, hsba_adj_3mo['Buy_Signal_Price'], color='green', label='Buy', marker='^', alpha=1)
+  plt.scatter(hsba_adj_3mo.index, hsba_adj_3mo['Sell_Signal_Price'], color='red', label='Sell', marker='v', alpha=1)
+  plt.plot(hsba_adj_3mo['Adj Close'], label='Adj Close Price', alpha = 0.35)
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Adj Close Price')
+  plt.legend(loc = 'upper left')
+  plt.show()
+
+ticker = 'HSBA.L'
+title_txt = 'HSBA.L Adjusted Close Price Buy & Sell Signals'
+
+st.pyplot(buy_sell_macd_plot())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)   
+
+st.header('Momentum Strategies')
+st.write('In momentum algorithmic trading strategies stocks have momentum (i.e. upward or downward trends) that we can detect and exploit.') 
+
+st.subheader('Relative Strength Index (RSI)') 
+st.write('The RSI is a momentum indicator. A typical momentum strategy will buy stocks that have been showing an upward trend in hopes that the trend will continue, and make predictions based on whether the past recent values were going up or going down.')
+
+st.write('The RSI determines the level of overbought (70) and oversold (30) zones using a default lookback period of 14 i.e. it uses the last 14 values to calculate its values. The idea is to buy when the RSI touches the 30 barrier and sell when it touches the 70 barrier.')
+
+def adj_12mo():
+  sns.set(rc={'figure.figsize':(15, 9)})
+  ftse100_stocks[ticker]['Adj Close'].loc['2023-01-01':'2023-12-31'].plot(label=f"{label_txt}")
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend()
+
+st.write('Let us again display adjusted close prices graph for 2023 for reference') 
+
+ticker = 'HSBA.L'
+title_txt = "HSBA.L Adjusted Close Price from 1 Jan - 31 Dec 2023"
+label_txt = "HSBA.L Adj Close "
+
+st.pyplot(adj_12mo())
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)   
+
+hsba_adj_12mo = hsba[['Adj Close']]['2023-01-01':'2023-12-31']
+
+st.write('In order to be able to calculate the RSI,  first our data needs to be prepared.')
+
+st.write('First, let us get difference in price for the previous day.')
+
+delta = hsba_adj_12mo['Adj Close'].diff(1)
+st.dataframe(delta)
+
+# Remove NaNs
+
+delta = delta.dropna()
+
+st.write('Second, let us get positive gains (up) and negative gains (down)')
+up = delta.copy()
+down = delta.copy()
+up[up < 0] = 0
+down[down > 0] = 0
+st.dataframe(up)
+st.dataframe(down)
+
+st.write('Third, let us get the time period:')
+period = 14
+st.dataframe(period)
+
+
+st.write('Fourth, let us calculate average gain and average loss')
+AVG_Gain = up.rolling(window=period).mean()
+st.dataframe(AVG_Gain)
+
+#AVG_Loss = abs(down.rolling(window=period).mean())
+AVG_Loss = down.abs().rolling(window=period).mean()
+st.dataframe(AVG_Loss)
+
+st.write('And now let us calculate RSI based on SMA.')
+
+# Calculate Relative Strength (RS)
+RS = AVG_Gain / AVG_Loss
+# Calculate RSI
+RSI = 100.0 - (100.0 / (1.0 + RS))
+def rsi():
+  sns.set(rc={'figure.figsize':(20, 10)})
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('RSI', color = 'black', fontsize = 15);
+  RSI.plot()
+ticker = 'HSBA.L'
+title_txt = "HSBA.L RSI plot for 1 Jan - 31 Dec 2023"
+label_txt = "HSBA.L RSI level"
+
+st.pyplot(rsi())
+
+st.write('Now, let us create a dataframe with Adjusted Close and RSI together.')
+new_df = pd.DataFrame()
+new_df['Adj Close'] = hsba_adj_12mo['Adj Close']
+new_df['RSI'] = RSI
+st.dataframe(new_df)
+
+st.write('And now, let us plot HSBC adjusted close price for the whole 2023 year.')
+def adj_close_12mo():
+  sns.set(rc={'figure.figsize':(20, 10)})
+  plt.plot(new_df.index, new_df['Adj Close'])
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Stock Price (p)', color = 'black', fontsize = 15);
+  plt.legend(new_df.columns.values, loc = 'upper left')
+  plt.show()
+
+title_txt = "HSBA.L Adjusted Close Price from 1 Jan - 31 Dec 2023"
+
+st.pyplot(adj_close_12mo())
+
+st.write('Let us plot the corresponding RSI values and the significant levels that we had calculated earlier.')
+
+def rsi_sma():
+  plt.figure(figsize=(20, 10))
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.plot(new_df.index, new_df['RSI'])
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.axhline(0, linestyle='--', alpha = 0.5, color='gray')
+  plt.axhline(10, linestyle='--', alpha = 0.5, color='orange')
+  plt.axhline(20, linestyle='--', alpha = 0.5, color='green')
+  plt.axhline(30, linestyle='--', alpha = 0.5, color='red')
+  plt.axhline(70, linestyle='--', alpha = 0.5, color='red')
+  plt.axhline(80, linestyle='--', alpha = 0.5, color='green')
+  plt.axhline(90, linestyle='--', alpha = 0.5, color='orange')
+  plt.axhline(100, linestyle='--', alpha = 0.5, color='gray')
+  plt.show()
+title_txt = 'HSBA.L RSI based on SMA'
+
+st.pyplot(rsi_sma())
+
+
+st.write('Now let us us attempt the same excersise but based on EWMA.')
+period = 14
+
+# Calculate the EWMA average gain and average loss
+AVG_Gain2 = up.ewm(span=period).mean()
+AVG_Loss2 = down.abs().ewm(span=period).mean()
+
+# Calculate the RSI based on EWMA
+RS2 = AVG_Gain2 / AVG_Loss2
+RSI2 = 100.0 - (100.0 / (1.0 + RS2))
+
+new_df2 = pd.DataFrame()
+new_df2['Adj Close'] = hsba_adj_12mo['Adj Close']
+new_df2['RSI2'] = RSI2
+st.dataframe(new_df2)
+
+# Plot corresponding RSI values and the significant levels
+
+def rsi_ewma():
+  plt.figure(figsize=(20, 10))
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.plot(new_df2.index, new_df2['RSI2'])
+  plt.axhline(0, linestyle='--', alpha = 0.5, color='gray')
+  plt.axhline(10, linestyle='--', alpha = 0.5, color='orange')
+  plt.axhline(20, linestyle='--', alpha = 0.5, color='green')
+  plt.axhline(30, linestyle='--', alpha = 0.5, color='red')
+  plt.axhline(70, linestyle='--', alpha = 0.5, color='red')
+  plt.axhline(80, linestyle='--', alpha = 0.5, color='green')
+  plt.axhline(90, linestyle='--', alpha = 0.5, color='orange')
+  plt.axhline(100, linestyle='--', alpha = 0.5, color='gray')
+  plt.show()
+title_txt = 'HSBA.L RSI based on EWMA'
+
+st.pyplot(rsi_ewma())
+
+st.write('A conclusion of sorts: it appears that RSI value dips below the 20 significant level in November 2023 indicating that the stock was oversold and presented a buying opportunity for an investor before a price rise.')
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)   
+
+st.subheader('Money Flow Index (MFI)')
+st.write('Money Flow Index (MFI) is a technical oscillator, and momentum indicator, that uses price and volume data for identifying overbought or oversold signals in an asset. It can also be used to spot divergences that warn of a trend change in price. The oscillator moves between 0 and 100 and a reading of above 80 implies overbought conditions, and below 20 implies oversold conditions.')
+
+st.write('It is related to the Relative Strength Index (RSI) but incorporates volume, whereas the RSI only considers price.')
+st.write(' Let us again experiment on HSBC data for 2023')
+
+hsba_12mo = hsba.copy()  
+hsba_12mo = hsba_12mo['2023-01-01':'2023-12-31']
+st.dataframe(hsba_12mo)
+
+def hsba_12mo_close():
+  plt.figure(figsize=(20, 10))
+  plt.plot(hsba_12mo['Close'])
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Close Price', color = 'black', fontsize = 15)
+  plt.legend(hsba_12mo.columns.values, loc='upper left')
+  plt.show()
+
+title_txt = "HSBA.L Close Price from 1 Jan - 31 Dec 2023"
+label_txt = "HSBA.L Close price "
+
+st.pyplot(hsba_12mo_close())
+
+
+st.write('Let us calculate a typical price...')
+
+typical_price = (hsba_12mo['Close'] + hsba_12mo['High'] + hsba_12mo['Low']) / 3
+st.dataframe(typical_price)
+
+period = 14
+st.write('and the money flow.')
+money_flow = typical_price * hsba_12mo['Volume']
+st.dataframe(money_flow)
+
+# Get all positive and negative money flows
+positive_flow = []
+negative_flow = []
+
+# Loop through typical price
+for i in range(1, len(typical_price)):
+  if typical_price[i] > typical_price[i-1]:
+    positive_flow.append(money_flow[i-1])
+    negative_flow.append(0)
+  elif typical_price[i] < typical_price[i-1]:
+    negative_flow.append(money_flow[i-1])
+    positive_flow.append(0)
+  else:
+    positive_flow.append(0)
+    negative_flow.append(0)
+    
+# Get all positive and negative money flows within same time period
+positive_mf = []
+negative_mf = []
+
+for i in range(period-1, len(positive_flow)):
+  positive_mf.append(sum(positive_flow[i + 1 - period : i+1]))
+for i in range(period-1, len(negative_flow)):
+  negative_mf.append(sum(negative_flow[i + 1 - period : i+1]))
+
+st.write('Now let us calculate money flow index:')
+
+mfi = 100 * (np.array(positive_mf) / (np.array(positive_mf) + np.array(negative_mf)))
+st.dataframe(mfi)
+
+df2 = pd.DataFrame()
+df2['MFI'] = mfi
+st.write(' And create the plot:')
+
+def mfi_plot():
+  plt.figure(figsize=(20, 10))
+  plt.plot(df2['MFI'], label = 'MFI')
+  plt.axhline(10, linestyle = '--', color = 'orange')
+  plt.axhline(20, linestyle = '--', color = 'blue')
+  plt.axhline(80, linestyle = '--', color = 'blue')
+  plt.axhline(90, linestyle = '--', color = 'orange')
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Time periods', color = 'black', fontsize = 15)
+  plt.ylabel('MFI Values', color = 'black', fontsize = 15)
+  plt.show()
+title_txt = "HSBA.L MFI"
+
+st.pyplot(mfi_plot())
+
+st.write('Let us now attempt and create definite BUY and SELL signals based on this information. Basically,  data-wise the process is the same as for previous strategies: we create a copy of the dataframe, create a function to calculate BUY and SELL signals, add those new columns to the dataframe, and then try to plot the result')
+
+new_mfi_df = pd.DataFrame()
+new_mfi_df = hsba_12mo[period:]
+new_mfi_df['MFI'] = mfi
+
+# Create function to get buy and sell signals
+
+def get_signal(data, high, low):
+  buy_signal = []
+  sell_signal = []
+
+  for i in range(len(data['MFI'])):
+    if data['MFI'][i] > high:
+      buy_signal.append(np.nan)
+      sell_signal.append(data['Close'][i])
+    elif data['MFI'][i] < low:
+      buy_signal.append(data['Close'][i])
+      sell_signal.append(np.nan)
+    else:
+      sell_signal.append(np.nan)
+      buy_signal.append(np.nan)
+
+  return (buy_signal, sell_signal)
+# Add new columns (Buy & Sell)
+
+new_mfi_df['Buy'] = get_signal(new_mfi_df, 80, 20)[0]
+new_mfi_df['Sell'] = get_signal(new_mfi_df, 80, 20)[1]
+
+def mfi_buy_sell_plot():
+  plt.figure(figsize=(20, 10))
+  plt.plot(new_mfi_df['Close'], label = 'Close Price', alpha = 0.5)
+  plt.scatter(new_mfi_df.index, new_mfi_df['Buy'], color = 'green', label = 'Buy Signal', marker = '^', alpha = 1)
+  plt.scatter(new_mfi_df.index, new_mfi_df['Sell'], color = 'red', label = 'Sell Signal', marker = 'v', alpha = 1)
+  plt.title(f"{title_txt}", color = 'black', fontsize = 20)
+  plt.xlabel('Date', color = 'black', fontsize = 15)
+  plt.ylabel('Close Price', color = 'black', fontsize = 15)
+  plt.legend(loc='upper left')
+  plt.show()
+title_txt = "Trading signals for HSBA.L stock"
+
+st.pyplot(mfi_buy_sell_plot())
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)   
+
+st.subheader('Stochastic Oscillator')
+st.write('The stochastic oscillator is a momentum indicator comparing the closing price of a security to the range of its prices over a certain period of time and is one of the best-known momentum indicators along with RSI and MACD.')
+st.write('The intuition is that in a market trending upward, prices will close near the high, and in a market trending downward, prices close near the low.')
+st.write('The stochastic oscillator is plotted within a range of zero and 100. The default parameters are an overbought zone of 80, an oversold zone of 20 and well-used lookbacks period of 14 and 5 which can be used simultaneously. The oscillator has two lines, the %K and %D, where the former measures momentum and the latter measures the moving average of the former. The %D line is more important of the two indicators and tends to produce better trading signals which are created when the %K crosses through the %D.')
+
+hsba_so = hsba.copy()
+
+st.markdown("""
+# Stochastic Oscillator Formula
+
+The stochastic oscillator is calculated using the following formula:
+
+`%K = 100(C – L14) / (H14 – L14)`
+
+Where:
+
+- `C` = the most recent closing price
+- `L14` = the low of the 14 previous trading sessions
+- `H14` = the highest price traded during the same 14-day period
+- `%K` = the current market rate for the currency pair
+- `%D` = 3-period moving average of `%K`
+
+The formula helps determine the momentum of a stock or asset by comparing the closing price to the high and low prices over a certain period of time, typically 14 days.
+""", unsafe_allow_html=True)
+
+st.write('In this implementation there are 3 possible states – long, short, flat (i.e. no position).')
+st.write('For correct calculations L14, H14, %K and %D columns need to be created and appended to the dataframe')
+
+#Create the "L14" column in the DataFrame
+st.ataframe(hsba_so['L14'] = hsba_so['Low'].rolling(window=14).min())
+
+#Create the "H14" column in the DataFrame
+st.dataframe(hsba_so['H14'] = hsba_so['High'].rolling(window=14).max())
+
+#Create the "%K" column in the DataFrame
+st.dataframe(hsba_so['%K'] = 100*((hsba_so['Close'] - hsba_so['L14']) / (hsba_so['H14'] - hsba_so['L14']) ))
+
+#Create the "%D" column in the DataFrame
+st.dataframe(hsba_so['%D'] = hsba_so['%K'].rolling(window=3).mean())
+
+
+st.write('Let us create a plot (with 2 subplots) showing the HSBA.L price over time, along with a visual representation of the Stochastic Oscillator.')
+
+fig, axes = plt.subplots(nrows=2, ncols=1,figsize=(20,10))
+fig.subplots_adjust(hspace=0.5)
+
+st.pyplot(hsba_so['Close'].plot(ax=axes[0]); axes[0].set_title('Close'))
+st.pyplot(hsba_so[['%K','%D']].plot(ax=axes[1]); axes[1].set_title('Oscillator');)
+
