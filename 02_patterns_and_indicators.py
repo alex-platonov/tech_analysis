@@ -1277,4 +1277,5 @@ st.pyplot(fig)
 
 st.write('Now let us plot some more graphs for the same period to get more insights from the data: a candlestick plot and a volume plot.')
 
-st.pyplot(mpf.plot(hsba_roc_100d, type='candle',  style='yahoo', figsize=(15,8),  title="HSBA.L Daily Price", volume=True))
+mpf.plot(hsba_roc_100d, type='candle',  style='yahoo', figsize=(15,8),  title="HSBA.L Daily Price", volume=True)
+st.pyplot(mpf)
