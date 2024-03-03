@@ -615,9 +615,9 @@ ticker = 'HSBA.L'
 title_txt = "Double Exponential Smoothing for HSBA.L stock with different alpha and beta values"
 label_txt = "HSBA.L Adj Close"
 
-st.pyplot(plot_double_exponential_smoothing(ftse100_stocks[ticker]['Adj Close'].loc['2019-01-01':'2023-12-31'], alphas=[0.9, 0.02],)
+st.pyplot(plot_double_exponential_smoothing(ftse100_stocks[ticker]['Adj Close'].loc['2019-01-01':'2023-12-31'], alphas=[0.9, 0.02],))
           
-#st.write('The third main type is Triple Exponential Smoothing aka Holt Winters Method which is an extension of Exponential Smoothing that explicitly adds support for seasonality or periodic fluctuations. Since we are analyzing a bank sector stock we shall omit the triple smoothing as seasonality and any periodic fluctuations do not have a drastic effect on the whole picture.')
+st.write('The third main type is Triple Exponential Smoothing aka Holt Winters Method, which is an extension of Exponential Smoothing that explicitly adds support for seasonality or periodic fluctuations. Since we are analyzing a bank sector stock we shall omit the triple smoothing as seasonality and any periodic fluctuations do not have a drastic effect on the whole picture.')
 #--------------------------------------------------------------------------------------------------------------------
 st.markdown("<hr>", unsafe_allow_html=True)          
 
