@@ -1282,3 +1282,52 @@ st.write('Now let us plot some more graphs for the same period to get more insig
 
 mpf.plot(hsba_roc_100d, type='candle',  style='yahoo', figsize=(15,8),  title="HSBA.L Daily Price", volume=True)
 st.pyplot(mpf)
+
+
+# Combined Candlestick, ROC and Volume plot
+
+# We create an additional plot planing it on the third panel
+roc_plot = mpf.make_addplot(roc, panel=2, ylabel='ROC')
+
+#We pass the additional plot using the addplot parameter
+mpf.plot(hsba_roc_100d, type='candle',  style='yahoo', figsize=(15,8), addplot=roc_plot, title="HSBA.L Daily Price", volume=True)
+st.pyplot(mpf)
+
+#--------------------------------------------------------------------------------------------------------------------
+st.markdown("<hr>", unsafe_allow_html=True)   
+
+st.header('Volatility trading strategies)
+st.write('Volatility trading involves predicting the stability of an asset’s value. Instead of trading on the price rising or falling, traders take a position on whether it will move in any direction.')
+
+st.subheader('Bollinger Bands')
+st.write('A Bollinger Band is a volatility indicator based on the correlation between the normal distribution and stock price and can be used to draw support and resistance curves. It is defined by a set of lines plotted two standard deviations (positively and negatively) away from a simple moving average (SMA) of the security price, but can be adjusted to user preferences.')
+st.write('By default, it calculates a 20-period SMA (the middle band), an upper band two standard deviations above the moving average and a lower band two standard deviations below it.')
+st.write('If the price moves above the upper band this could indicate a good time to sell, and if it moves below the lower band it could be a good time to buy.')
+st.write('Whereas the RSI can only be used as a confirming factor inside a ranging market, not a trending market, by using Bollinger bands we can calculate the widening variable, or moving spread between the upper and the lower bands, that tells us if prices are about to trend and whether the RSI signals might not be that reliable.')
+st.writre('Despite 90% of the price action happening between the bands, however, a breakout is not necessarily a trading signal as it provides no clue as to the direction and extent of future price movement.')
+
+st.write('For this strategy testing we shall take again a 12-moth sample of the original dataset')
+hsba_12mo_bb = hsba_12mo.copy()
+st.dataframe(hsba_12mo_bb)
+
+#Get the time period (20 days)
+period = 20
+# Calculate the 20 Day Simple Moving Average, Std Deviation, Upper Band and Lower Band
+#Calculating the Simple Moving Average
+hsba_12mo_bb['SMA'] = hsba_12mo_bb['Close'].rolling(window=period).mean()
+# Get the standard deviation
+hsba_12mo_bb['STD'] = hsba_12mo_bb['Close'].rolling(window=period).std()
+#Calculate the Upper Bollinger Band
+hsba_12mo_bb['Upper'] = hsba_12mo_bb['SMA'] + (hsba_12mo_bb['STD'] * 2)
+#Calculate the Lower Bollinger Band
+hsba_12mo_bb['Lower'] = hsba_12mo_bb['SMA'] - (hsba_12mo_bb['STD'] * 2)
+#Create a list of columns to keep
+column_list = ['Close', 'SMA', 'Upper', 'Lower']
+
+def bb_12mo():
+  hsba_12mo_bb[column_list].plot(figsize=(20,10))
+  plt.title('Bollinger Band for HSBA.L', color = 'black', fontsize = 20)
+  plt.ylabel('Close Price', color = 'black', fontsize = 15)
+  plt.show();
+
+st.pyplot(bb_12mo())
