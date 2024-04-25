@@ -6,20 +6,6 @@ This  an excercise in technical analysis wrapped up in a catchy web-app form (th
 
 **Wikipedia-like definition**: Technical analysis is the use of charts and technical indicators to identify trading signals and price patterns. 
 
-An attempt to investigate various strategies such as :
- - leading and lagging trend;
- - momentum;
- 
-Apart from that, various volatility and volume indicators will be explored: 
-- Moving Averages; 
-- Moving Average Convergence Divergence (MACD); 
-- Stochastic Oscillator; 
-- Relative Strength Index (RSI);
-- Money Flow Index (MFI); 
-- Rate of Change (ROC); 
-- Bollinger Bands;
-- On-Balance Volume (OBV).
-
 ## Step 1. Data collection and Exploratory Data Analysis (EDA)
 Historical data on several FTSE 100 index companies will be collected, analyzed, and visualized in an attempt to gain insights into their equity market performance from 2014 to 2024. The market behavior of the index itself will also be analyzed. 
 
