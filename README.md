@@ -41,6 +41,8 @@ This list represents a selection of different industries, namely - pharmaceutica
 ## Step 2. Chart patterns and technical indicators 
 As stated above: Technical analysis is the use of charts and technical indicators to identify trading signals and price patterns so an investigative attempt will be made using the most common indicators.  
 UPDATE: so it took me over 2 months to whip this one into shape. 
+UPDATE2: unfortunately this notebook seems to be too heavy for Streamlit cloud implementation. If you still wish to make it interactive - please use 02_patterns_and_indicators.py (it is already preconfigured for Streamlit rollout)
+
 ![image](https://github.com/alex-platonov/tech_analysis/assets/154932143/086c5f92-3475-4fde-a972-381a88782033)
 
 In this step, we shall attempt to discover a whole plethora of technical strategies: 
