@@ -38,8 +38,38 @@ This list represents a selection of different industries, namely - pharmaceutica
 ![Step_1](https://github.com/alex-platonov/tech_analysis/blob/main/step_1.gif)
 
 
-## Step 2. Chart patterns and technical indicators (WIP)
+## Step 2. Chart patterns and technical indicators 
 As stated above: Technical analysis is the use of charts and technical indicators to identify trading signals and price patterns so an investigative attempt will be made using the most common indicators.  
+UPDATE: so it took me over 2 months to whip this one into shape. 
+![image](https://github.com/alex-platonov/tech_analysis/assets/154932143/086c5f92-3475-4fde-a972-381a88782033)
+
+In this step, we shall attempt to discover a whole plethora of technical strategies: 
+
+**Moving averages:**
+- Simple Moving Average (SMA)
+- Moving Average Crossover Strategy
+- Exponential Moving Average
+- Triple Moving Average Crossover Strategy
+- Exponential Smoothing
+- Double Exponential Smoothing
+- Moving average convergence divergence (MACD)
+
+**Momentum Strategies:**
+- Relative Strength Index (RSI) (momentum indicator)
+- Money Flow Index (MFI)
+- Stochastic Oscillator
+- Rate of Change (ROC)
+
+**Volatility trading strategies:**
+- Bollinger Bands
+
+**Mean reversion strategies:**
+- Pairs Trading
+- Cointegration
+
+**Volume Trading Strategies:**
+- On Balance Volume (OBV)
+
 
 ## Step 3. Hypothesis testing and validation (WIP)
 Based on the fact that historically FTSE 100 index has demonstrated drastic volatility changes a hypothesis can be constructed and tested: does this volatility signify any fundamental changes and therefore likely to continue or it could just happen by chance.
