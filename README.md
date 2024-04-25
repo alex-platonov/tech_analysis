@@ -120,7 +120,7 @@ The ROC indicator is a pure momentum oscillator. The ROC calculation compares th
 Volatility trading involves predicting the stability of an asset’s value. Instead of trading on the price rising or falling, traders take a position on whether it will move in any direction.
 
 #### Bollinger Bands
-A Bollinger Band is a volatility indicator based on based on the correlation between the normal distribution and stock price and can be used to draw # support and resistance curves. It is defined by a set of lines plotted two standard deviations (positively and negatively) away from a simple moving average (SMA) of the security's price, but can be adjusted to user preferences.
+A Bollinger Band is a volatility indicator based on based on the correlation between the normal distribution and stock price and can be used to draw support and resistance curves. It is defined by a set of lines plotted two standard deviations (positively and negatively) away from a simple moving average (SMA) of the security's price, but can be adjusted to user preferences.
 By default, it calculates a 20-period SMA (the middle band), an upper band two standard deviations above the moving average, and a lower band two standard deviations below it.
 If the price moves above the upper band this could indicate a good time to sell, and if it moves below the lower band it could be a good time to buy.
 Whereas the RSI can only be used as a confirming factor inside a ranging market, not a trending market, by using Bollinger bands we can calculate the widening variable,
