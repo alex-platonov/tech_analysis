@@ -7,7 +7,7 @@ This  an excercise in technical analysis wrapped up in a catchy web-app form (th
 **Wikipedia-like definition**: Technical analysis is the use of charts and technical indicators to identify trading signals and price patterns. 
 
 ## Step 1. Data collection and Exploratory Data Analysis (EDA)
-Historical data on several FTSE 100 index companies will be collected, analyzed, and visualized in an attempt to gain insights into their equity market performance from 2014 to 2024. The market behavior of the index itself will also be analyzed. 
+Historical data on several FTSE 100 index companies will be collected, analyzed, and visualized in an attempt to gain insights into their equity market performance from 2014 to 2024. The market behavior of the index itself will be analyzed as well. 
 
 Live demo is available here: https://techanalysis-8zz9ru24q8kcvnue2tuh4f.streamlit.app/
 
@@ -27,7 +27,7 @@ This list represents a selection of different industries, namely - pharmaceutica
 ## Step 2. Chart patterns and technical indicators 
 As stated above: Technical analysis is the use of charts and technical indicators to identify trading signals and price patterns so an investigative attempt will be made using the most common indicators.  
 UPDATE: so it took me over 2 months to whip this one into shape :) 
-UPDATE2: unfortunately this notebook seems to be too heavy for Streamlit cloud implementation. If you still wish to make it interactive - please use 02_patterns_and_indicators.py (it is already preconfigured for Streamlit rollout)
+UPDATE2: unfortunately this notebook seems to be too heavy for Streamlit cloud implementation. If you still wish to make it interactive - please use `02_patterns_and_indicators.py` (it is already preconfigured for Streamlit rollout). 
 
 For this exercise we shall be taking the same FTSE100 constituent stocks: AZN.L GSK.L ULVR.L BP.L SHEL.L HSBA.L, however, the main honorable Guinea Pig will still be HSBA.L.
 
@@ -55,7 +55,7 @@ In a Simple Moving Average, each value in the time period carries equal weight, 
 
 #### Triple Moving Average Crossover Strategy
 This strategy uses three moving averages - short/fast, middle/medium and long/slow - and has two buy and sell signals.
-The first is to buy when the middle/medium moving average crosses above the long/slow moving average and the short/fast moving average crosses above the middle/medium  # moving average. If we use this buy signal the strategy is to sell if the short/fast moving average crosses below the middle/medium moving average.
+The first is to buy when the middle/medium moving average crosses above the long/slow moving average and the short/fast moving average crosses above the middle/medium moving average. If we use this buy signal the strategy is to sell if the short/fast moving average crosses below the middle/medium moving average.
 The second is to buy when the middle/medium moving average crosses below the long/slow moving average and the short/fast moving average crosses below the middle/medium moving average. If we use this buy signal the strategy is to sell if the short/fast moving average crosses above the middle/medium moving average.
 
 ![image](https://github.com/alex-platonov/tech_analysis/assets/154932143/9e1c0666-a9d0-43f1-bf2a-86fc012bdb76)
@@ -66,7 +66,7 @@ Single Exponential Smoothing, also known as Simple Exponential Smoothing, is a t
 ![image](https://github.com/alex-platonov/tech_analysis/assets/154932143/d3a17c5f-51a0-4298-95d7-5a1e3844f327)
 
 #### Double Exponential Smoothing
-aka Holt’s Linear Trend Model) is an extension of the previous one being a recursive use of Exponential Smoothing twice where beta is the trend smoothing factor, and takes values between 0 and 1. It explicitly adds support for trends.
+aka Holt’s Linear Trend Model is an extension of the previous one being a recursive use of Exponential Smoothing twice where beta is the trend smoothing factor, and takes values between 0 and 1. It explicitly adds support for trends.
 
 ![image](https://github.com/alex-platonov/tech_analysis/assets/154932143/abba22c5-3b9d-4fe7-8767-7fe42d89df2c)
 
@@ -117,7 +117,7 @@ and the extent of future price movement.
 ![image](https://github.com/alex-platonov/tech_analysis/assets/154932143/d1397458-09ee-47e2-be13-1d69c4fbc877)
 
 ### Mean reversion strategies:
-In mean reversion algorithmic trading strategies stocks return to their mean and we can exploit when it deviates from that mean.
+In mean reversion strategies stocks return to their mean and we can exploit when it deviates from that mean.
 
 #### Pairs Trading
 Pairs Trading is the Holy Grail of market neutral strategies and a type of statistical arbitrage, which is exploiting statistical properties that we believe can make money if they continue.
